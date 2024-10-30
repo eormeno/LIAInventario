@@ -11,7 +11,7 @@
             <!-- Nombre -->
             <div>
                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre:</label>
-                <input type="text" name="nombre" id="nombre" value="{{ old('nombre', $asset->nombre) }}" required
+                <input type="text" name="nombre" id="nombre" value="{{ old('nombre', $asset->nombre) }}" required placeholder="Notebook Asus" 
                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300">
             </div>
 
@@ -69,7 +69,7 @@
             <!-- Alta -->
             <div>
                 <label for="alta" class="block text-sm font-medium text-gray-700">Alta:</label>
-                <input type="date" name="alta" id="alta" value="{{ old('alta', $asset->alta ? $asset->alta->format('Y-m-d') : '') }}" required
+                <input type="date" name="alta" id="alta" value="{{ old('alta', $asset->alta ? $asset->alta->format('dd-mm-aa') : '') }}" required
                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300">
             </div>
 
@@ -90,6 +90,9 @@
             <!-- Botón para enviar -->
             <div>
                 <button type="submit" class="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">Guardar</button>
+            </div>
+            <div class="mt-6">
+            <a href="{{ route('assets.index') }}" class="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">Volver al listado</a>
             </div>
 
         </form>
