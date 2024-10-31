@@ -5,62 +5,49 @@ namespace App\Http\Controllers;
 use App\Models\Place;
 use App\Http\Requests\StorePlaceRequest;
 use App\Http\Requests\UpdatePlaceRequest;
+use App\Traits\DebugHelper;
 
 class PlaceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    use DebugHelper;
+
     public function index()
     {
-        //
+        $places = Place::latest()->paginate(5);
+        return view('places.index', compact('places'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('places.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StorePlaceRequest $request)
     {
-        //
+        $validated = $request->validated();
+        Place::create($validated);
+        return redirect()->route('places.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Place $place)
     {
-        //
+        return view('places.show', compact('place'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Place $place)
     {
-        //
+        return view('places.edit', compact('place'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdatePlaceRequest $request, Place $place)
     {
-        //
+        $place->update($request->validated());
+        return redirect()->route('places.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Place $place)
     {
-        //
+        $place->delete();
+        return redirect()->route('places.index');
     }
 }
