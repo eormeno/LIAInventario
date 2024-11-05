@@ -32,6 +32,16 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'profile_photo_path' => null,
             'current_team_id' => null,
+            'registro' => $this->faker->unique()->regexify('E[0-9]{2}-[0-9]{3}'),
+            'apellidos' => $fake_last,
+            'nombres' => $fake_first,
+            'cuil' => $this->faker->unique()->numerify('##-########-#'),
+            'nacimiento' => $this->faker->date(),
+            'telefono' => $this->faker->phoneNumber(),
+            'domicilio' => $this->faker->address(),
+            'area' => $this->faker->randomElement(['Registrado','Becario','Software','Hardware','TI']),
+            'coordinador' => $this->faker->boolean(),
+            'observaciones' => $this->faker->optional()->sentence(),
         ];
     }
 

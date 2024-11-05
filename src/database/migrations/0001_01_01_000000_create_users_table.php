@@ -15,11 +15,21 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
-            $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
+            $table->foreignId('current_team_id')->nullable();
+            $table->string('registro')->unique();
+            $table->string('apellidos');
+            $table->string('nombres');
+            $table->string('cuil')->unique();
+            $table->date('nacimiento');
+            $table->string('telefono');
+            $table->string('domicilio');
+            $table->string('area')->default('Registrado');
+            $table->string('coordinador');
+            $table->text('observaciones')->nullable();
             $table->timestamps();
         });
 
