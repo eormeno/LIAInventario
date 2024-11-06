@@ -1,11 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AssetController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ContadorController;
-use App\Http\Controllers\AssetController;
 
 
 
@@ -73,4 +74,5 @@ Route::get('/contador/{número}/dec', [ContadorController::class, 'decrementar']
 Route::get('/contador/reset', [ContadorController::class, 'reset'])->name('contador.reset');
 Route::get('/contador/{número}/duplicate', [ContadorController::class, 'duplicar'])->name('contador.duplicate');
 Route::resource('assets', AssetController::class)->middleware('auth');
+Route::resource('logs', LogController::class)->middleware('auth');
 
