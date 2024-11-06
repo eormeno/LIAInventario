@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('password');
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
-            $table->string('profile_photo_path', 2048)->nullable();
+            //$table->string('profile_photo_path', 2048)->nullable();
+            $table->string('profile_photo')->nullable();
             $table->foreignId('current_team_id')->nullable();
             $table->string('registro')->unique();
             $table->string('apellidos');
