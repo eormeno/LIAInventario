@@ -56,7 +56,7 @@ class UserFactory extends Factory
             'nacimiento' => $this->faker->date(),
             'telefono' => $this->faker->phoneNumber(),
             'domicilio' => $this->faker->address(),
-            'area' => $this->faker->randomElement(['Registrado','Becario','Software','Hardware','TI']),
+            'area' => $this->faker->randomElement(['Software','Hardware','TI','Administrativa']),
             'coordinador' => $this->faker->boolean(),
             'observaciones' => $this->faker->optional()->sentence(),
         ];

@@ -28,7 +28,7 @@ return new class extends Migration
             $table->date('nacimiento');
             $table->string('telefono');
             $table->string('domicilio');
-            $table->string('area')->default('Registrado');
+            $table->string('area');
             $table->string('coordinador');
             $table->text('observaciones')->nullable();
             $table->timestamps();
