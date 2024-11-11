@@ -11,7 +11,7 @@
                     <x-validation-errors class="mb-4" />
 
                     <form action="{{ route('users.store') }}" method="POST"
-                    enctype="multipart/form-data">
+                    enctype="multipart/form-data" novalidate>
                         @csrf
                         <div class="mb-3">
                             <!-- Contenedor para la vista previa de la imagen -->
@@ -22,7 +22,7 @@
                                 function previewImage(event) {
                                     const file = event.target.files[0]; // Obtener el archivo seleccionado
                                     const previewContainer = document.getElementById('image-preview'); // El contenedor donde se mostrará la vista previa
-                            
+
                                     if (file) {
                                         // Si el archivo es una imagen
                                         const reader = new FileReader(); // Usamos FileReader para leer el archivo
@@ -41,7 +41,7 @@
                                     }
                                 }
                             </script>
-                            
+
                             <x-label for="profile_photo" value="Imagen de Perfil" />
                             <x-input id="profile_photo" class="block w-full mt-1" type="file" name="profile_photo"
                                 :value="old('profile_photo')" required autocomplete="image" onchange="previewImage(event)"/>
