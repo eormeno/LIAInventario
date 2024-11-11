@@ -64,26 +64,48 @@ class UserController extends Controller {
         return view('users.edit', compact('user', 'roles', 'userRole'));
     }
 
-    public function update(Request $request, $id) {
-        $request->validate([
-            'name' => 'required',
-            'email' => "required|email|unique:users,email,$id",
-            'roles' => 'required'
-        ]);
-
-        $input = $request->all();
-        $user = User::find($id);
-        $user->update($input);
-        DB::table('model_has_roles')->where('model_id', $id)->delete();
-
-        $user->assignRole($request->input('roles'));
-        $this->infoToast('User updated successfully');
+    public function update(StoreUserRequest $request, User $user) {
+        // Los datos ya están validados por UserRequest
+        $validated = $request->validated();
+    
+        // Si hay una nueva imagen, procesarla
+        if ($request->hasFile('profile_photo')) {
+            $file = $request->file('profile_photo');
+            $contents = file_get_contents($file);
+            $base64Image = base64_encode($contents);
+            $validated['profile_photo'] = $base64Image;
+        } else {
+            // Si no hay nueva imagen, removemos profile_photo del array
+            // para no sobrescribir la imagen existente
+            unset($validated['profile_photo']);
+        }
+    
+        // El campo coordinador debe ser booleano
+        $validated['coordinador'] = $request->has('coordinador') ? true : false;
+    
+        // Si viene password lo hasheamos, si no, lo removemos para no sobrescribir
+        if (isset($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
+    
+        // Actualizar el usuario
+        $user->update($validated);
+    
+        // Actualizar roles
+        if (isset($validated['roles'])) {
+            DB::table('model_has_roles')->where('model_id', $user->id)->delete();
+            $user->assignRole($validated['roles']);
+        }
+    
+        $this->infoToast('Usuario actualizado exitosamente');
         return redirect()->route('users.index');
     }
 
     public function destroy($id) {
         User::find($id)->delete();
-        $this->successToast('User deleted successfully');
+        $this->successToast('Usuario eliminado exitosamente');
         return redirect()->route('users.index');
     }
 }

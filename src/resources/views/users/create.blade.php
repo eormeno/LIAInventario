@@ -120,7 +120,7 @@
                                 <option value="Software" {{ old('area') == 'Software' ? 'selected' : '' }}>Software</option>
                                 <option value="Hardware" {{ old('area') == 'Hardware' ? 'selected' : '' }}>Hardware</option>
                                 <option value="TI" {{ old('area') == 'TI' ? 'selected' : '' }}>TI</option>
-                                <option value="Administración" {{ old('area') == 'Administración' ? 'selected' : '' }}>Administración</option>
+                                <option value="Administrativa" {{ old('area') == 'Administrativa' ? 'selected' : '' }}>Administrativa</option>
                             </select>
                         </div>
 
