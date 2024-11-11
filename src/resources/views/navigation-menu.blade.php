@@ -28,6 +28,11 @@
                         {{ __('Activos') }}
                     </x-nav-link>
 
+                    <x-nav-link href="{{ route('places.index') }}" :active="request()->routeIs('places.index')">
+                        {{ __('Lugares') }}
+                    </x-nav-link>
+                    
+
                     <x-nav-link href="{{ route('logs.index') }}" :active="request()->routeIs('logs.index')">
                         {{ __('Logs') }}
                     </x-nav-link>

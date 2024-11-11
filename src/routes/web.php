@@ -8,6 +8,8 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ContadorController;
 
+use App\Http\Controllers\PlaceController;
+
 
 
 Route::get('/', function () {
@@ -22,6 +24,7 @@ Route::middleware('permission:see-panel')->group(function () {
     Route::get('/pull-events', [EventController::class, 'pullEvents'])->name('pull-events');
     Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
+    Route::resource('places', PlaceController::class);
 });
 
 // Rutas de la aplicación
@@ -74,5 +77,4 @@ Route::get('/contador/{número}/dec', [ContadorController::class, 'decrementar']
 Route::get('/contador/reset', [ContadorController::class, 'reset'])->name('contador.reset');
 Route::get('/contador/{número}/duplicate', [ContadorController::class, 'duplicar'])->name('contador.duplicate');
 Route::resource('assets', AssetController::class)->middleware('auth');
-Route::resource('logs', LogController::class)->middleware('auth');
 
