@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\Place;
 
 
 class DatabaseSeeder extends Seeder {
@@ -12,8 +13,8 @@ class DatabaseSeeder extends Seeder {
         $this->call(PermissionsSeeder::class);
         $this->call(UsersSeeder::class);
         $this->call(AssetSeeder::class);
+        $this->call(LogSeeder::class);
         $this->call(PlaceSeeder::class);
 
-        $this->call(LogSeeder::class);
     }
 }

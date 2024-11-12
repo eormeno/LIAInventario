@@ -25,6 +25,7 @@ Route::middleware('permission:see-panel')->group(function () {
     Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
     Route::resource('places', PlaceController::class);
+    Route::resource('logs', LogController::class);
 });
 
 // Rutas de la aplicación
