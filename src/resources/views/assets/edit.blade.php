@@ -11,7 +11,7 @@
             <!-- Nombre -->
             <div>
                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre:</label>
-                <input type="text" name="nombre" id="nombre" value="{{ old('nombre', $asset->nombre) }}" required
+                <input type="text" name="nombre" id="nombre" value="{{ old('nombre', $asset->nombre) }}" required placeholder="Notebook Asus" 
                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300">
             </div>
 
@@ -39,10 +39,13 @@
             <!-- Imagen Actual -->
             <label for="imagen">Imagen actual</label>
             @if($asset->imagen)
-                <div class="mt-2">
-                    <p>Vista previa de la imagen actual:</p>
-                    <img src="{{ asset('storage/' . $asset->imagen) }}" alt="Vista previa" class="w-32 h-32 object-cover mb-2">
-                </div>
+                @if (Str::startsWith($asset->imagen, 'data:image'))
+                    <img src="{{ $asset->imagen }}" alt="Imagen Base64" class="w-32 h-32 object-cover rounded shadow-sm">
+                         @else
+                            <img src="{{ asset('storage/' . $asset->imagen) }}" alt="Imagen subida" class="w-32 h-32 object-cover rounded shadow-sm">
+                @endif
+            @else
+                <span class="text-[#212121]">Sin imagen</span>
             @endif
 
             <!-- Subir nueva imagen -->
@@ -69,7 +72,7 @@
             <!-- Alta -->
             <div>
                 <label for="alta" class="block text-sm font-medium text-gray-700">Alta:</label>
-                <input type="date" name="alta" id="alta" value="{{ old('alta', $asset->alta ? $asset->alta->format('Y-m-d') : '') }}" required
+                <input type="date" name="alta" id="alta" value="{{ old('alta', $asset->alta ? $asset->alta->format('dd-mm-aa') : '') }}" required
                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300">
             </div>
 
@@ -90,6 +93,9 @@
             <!-- Botón para enviar -->
             <div>
                 <button type="submit" class="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">Guardar</button>
+            </div>
+            <div class="mt-6">
+            <a href="{{ route('assets.index') }}" class="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">Volver al listado</a>
             </div>
 
         </form>

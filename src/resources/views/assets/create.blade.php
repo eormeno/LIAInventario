@@ -13,7 +13,7 @@
             <!-- Nombre -->
             <div>
                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre:</label>
-                <input type="text" name="nombre" id="nombre" required 
+                <input type="text" name="nombre" id="nombre" required placeholder="Notebook Asus" 
                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300">
             </div>
 
@@ -34,7 +34,7 @@
             <!-- Detalle -->
             <div>
                 <label for="detalle" class="block text-sm font-medium text-gray-700">Detalle:</label>
-                <textarea name="detalle" id="detalle" required
+                <textarea name="detalle" id="detalle" required placeholder="Caracteristicas del activo. Ej. para computadora, memoria RAM,procesador..." 
                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300"></textarea>
             </div>
 
@@ -73,14 +73,14 @@
 
             <div>
                 <label for="baja" class="block text-sm font-medium text-gray-700">Baja:</label>
-                <input type="date" name="alta" id="baja" required
+                <input type="date" name="alta" id="baja"
                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300">
             </div>
 
             <!-- Observaciones -->
             <div>
                 <label for="observaciones" class="block text-sm font-medium text-gray-700">Observaciones:</label>
-                <textarea name="observaciones" id="observaciones"
+                <textarea name="observaciones" id="observaciones" placeholder="Información adicional sobre el activo..." 
                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300"></textarea>
             </div>
 

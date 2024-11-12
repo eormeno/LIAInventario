@@ -9,6 +9,7 @@ use App\Traits\ToastTrigger;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class AssetController extends Controller
 {
@@ -17,7 +18,7 @@ class AssetController extends Controller
      */
     use DebugHelper, ToastTrigger;
     public function index(Request $request): View {
-        $assets = Asset::orderBy('id', 'DESC')->paginate(5);
+        
         // Obtener el término de búsqueda
         $search = $request->input('search');
         
@@ -31,7 +32,7 @@ class AssetController extends Controller
                          ->orWhere('detalle', 'like', "%{$search}%")
                          ->orWhere('tipo', 'like', "%{$search}%")
                          ->orWhere('observaciones', 'like', "%{$search}%");
-        })->get();
+        })->paginate(4);
 
         // Pasar los activos y la búsqueda a la vista
         return view('assets.index', compact('assets', 'search'));
@@ -48,35 +49,33 @@ class AssetController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request): RedirectResponse
-    {
-        // Validar los datos del formulario
-        $validated = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'codigo_inventario' => 'required|string|unique:assets,codigo_inventario',
-            'codigo_patrimonio' => 'required|string|unique:assets,codigo_patrimonio',
-            'detalle' => 'required|string',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'tipo' => 'required|string',
-            'cantidad' => 'required|integer',
-            'alta' => 'required|date',
-            'baja' => 'nullable|date',
-            'observaciones' => 'nullable|string',
-        ]);
+{
+    $validated = $request->validate([
+        'nombre' => 'required|string|max:255',
+        'codigo_inventario' => 'required|string|unique:assets,codigo_inventario',
+        'codigo_patrimonio' => 'required|string|unique:assets,codigo_patrimonio',
+        'detalle' => 'required|string',
+        'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'tipo' => 'required|string',
+        'cantidad' => 'required|integer',
+        'alta' => 'nullable|date',
+        'baja' => 'nullable|date',
+        'observaciones' => 'nullable|string',
+    ]);
 
-        // Manejar la subida de la imagen
-        if ($request->hasFile('imagen')) {
-            $imagePath = $request->file('imagen')->store('assets_images', 'public');
-            $validated['imagen'] = $imagePath;
-        }
-
-        // Guardar los datos en la base de datos
-        Asset::create($validated);
-
-        // Redirigir después de guardar
-        return redirect()->route('assets.index')->with('success', 'Activo creado con éxito');
+    if ($request->hasFile('imagen')) {
+        $imagePath = $request->file('imagen')->store('assets_images', 'public');
+        $validated['imagen'] = $imagePath;
     }
 
-    // Otros métodos (show, edit, update, destroy) permanecen sin cambios...
+    // Asigna solo la fecha en formato dd-mm-aa
+    $validated['alta'] = $validated['alta'] ?? Carbon::now()->format('d-m-y');
+
+    Asset::create($validated);
+
+    return redirect()->route('assets.index')->with('success', 'Activo creado con éxito');
+}
+
 
     public function show(Asset $asset): View {
         return view('assets.show', compact('asset'));
@@ -86,38 +85,38 @@ class AssetController extends Controller
         return view('assets.edit', compact('asset'));
     }
 
-    public function update(Request $request, Asset $asset): RedirectResponse {
-        // Validar los datos para la actualización
-        $validated = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'codigo_inventario' => 'required|string|unique:assets,codigo_inventario,' . $asset->id,
-            'codigo_patrimonio' => 'required|string|unique:assets,codigo_patrimonio,' . $asset->id,
-            'detalle' => 'required|string',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'tipo' => 'required|string',
-            'cantidad' => 'required|integer',
-            'alta' => 'required|date',
-            'baja' => 'nullable|date',
-            'observaciones' => 'nullable|string',
-        ]);
+    public function update(Request $request, Asset $asset): RedirectResponse
+{
+    $validated = $request->validate([
+        'nombre' => 'required|string|max:255',
+        'codigo_inventario' => 'required|string|unique:assets,codigo_inventario,' . $asset->id,
+        'codigo_patrimonio' => 'required|string|unique:assets,codigo_patrimonio,' . $asset->id,
+        'detalle' => 'required|string',
+        'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'tipo' => 'required|string',
+        'cantidad' => 'required|integer',
+        'alta' => 'nullable|date',
+        'baja' => 'nullable|date',
+        'observaciones' => 'nullable|string',
+    ]);
 
-        // Manejar la subida de la nueva imagen si es necesario
-        if ($request->hasFile('imagen')) {
-            // Borrar la imagen anterior si existe
-            if ($asset->imagen) {
-                Storage::delete('public/' . $asset->imagen);
-            }
-
-            // Guardar la nueva imagen
-            $imagePath = $request->file('imagen')->store('assets_images', 'public');
-            $validated['imagen'] = $imagePath;
+    if ($request->hasFile('imagen')) {
+        if ($asset->imagen) {
+            Storage::delete('public/' . $asset->imagen);
         }
-
-        // Actualizar los datos del activo
-        $asset->update($validated);
-
-        return redirect()->route('assets.index')->with('success', 'Activo actualizado con éxito');
+        $imagePath = $request->file('imagen')->store('assets_images', 'public');
+        $validated['imagen'] = $imagePath;
     }
+
+    // Asigna solo la fecha en formato dd-mm-aa
+    $validated['alta'] = $validated['alta'] ?? Carbon::now()->format('d-m-y');
+
+    $asset->update($validated);
+
+    return redirect()->route('assets.index')->with('success', 'Activo actualizado con éxito');
+}
+
+
 
     public function destroy(Asset $asset): RedirectResponse {
         $asset->delete();

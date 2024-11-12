@@ -1,12 +1,16 @@
 <x-event-layout>
     <x-slot name="title">Activos</x-slot>
 
-    {{-- <div class="py-6">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-                    <div class="mt-4"> --}}
-    <div class="mb-4 flex justify-start ml-10">
+                    <div class="mt-4">
+                        <a href="{{ route('assets.create') }}"
+                            class="inline-flex items-center px-4 py-2 mb-2  bg-[#1a237e] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">
+                            Nuevo activo
+                        </a>
+    <div class="mb-4 flex justify-end ml-10">
         <form action="{{ route('assets.index') }}" method="GET">
             <input type="text" name="search" id="searchInput" placeholder="Buscar activos..." 
                 class="border rounded px-3 py-2 mr-2" 
@@ -19,7 +23,7 @@
     </div>
 
     <div class="overflow-x-auto">
-        <div class="mx-10">
+        <div class="mx-0">
             <table class="min-w-full bg-white border border-[#e0e0e0] shadow-sm">
                 <thead>
                     <tr class="text-white bg-[#1a237e] border-b border-[#e0e0e0]">
@@ -27,7 +31,7 @@
                         <th class="py-3 px-4 text-left text-sm font-medium">Código inventario</th>
                         <th class="py-3 px-4 text-left text-sm font-medium">Código patrimonio</th>
                         <th class="py-3 px-4 text-left text-sm font-medium">Detalle</th>
-                        <th class="py-3 px-4 text-left text-sm font-medium" style="width: 200px;">Imagen</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium">Imagen</th>
                         <th class="py-3 px-4 text-left text-sm font-medium">Tipo</th>
                         <th class="py-3 px-4 text-left text-sm font-medium">Cantidad</th>
                         <th class="py-3 px-4 text-left text-sm font-medium">Alta</th>
@@ -46,9 +50,9 @@
                             <td class="py-3 px-4">
                                 @if($asset->imagen)
                                     @if (Str::startsWith($asset->imagen, 'data:image'))
-                                        <img src="{{ $asset->imagen }}" alt="Imagen Base64" class="w-32 h-32 object-cover rounded shadow-sm">
+                                        <img src="{{ $asset->imagen }}" alt="Imagen Base64" class="w-10 h-10 object-cover rounded shadow-sm">
                                     @else
-                                        <img src="{{ asset('storage/' . $asset->imagen) }}" alt="Imagen subida" class="w-32 h-32 object-cover rounded shadow-sm">
+                                        <img src="{{ asset('storage/' . $asset->imagen) }}" alt="Imagen subida" class="w-10 h-10 object-cover rounded shadow-sm">
                                     @endif
                                 @else
                                     <span class="text-[#212121]">Sin imagen</span>
@@ -56,8 +60,8 @@
                             </td>
                             <td class="py-3 px-4">{{ $asset->tipo }}</td>
                             <td class="py-3 px-4">{{ $asset->cantidad }}</td>
-                            <td class="py-3 px-4">{{ $asset->alta }}</td>
-                            <td class="py-3 px-4">{{ $asset->baja }}</td>
+                            <td class="py-3 px-4">{{ $asset->alta->format('d-m-y') }}</td>
+                            <td class="py-3 px-4">{{ $asset->baja ? $asset->baja->format('d-m-y') : '-'  }}</td>
                             <td class="py-3 px-4">{{ $asset->observaciones }}</td>
                             <td class="py-3 px-4">
                                 <div class="flex space-x-3">
@@ -93,7 +97,9 @@
                     @endforeach
                 </tbody>
             </table>
-
+            <div class="mt-6">
+                    {{ $assets->links() }}
+            </div>
         </div>
         </div>
     </div>
