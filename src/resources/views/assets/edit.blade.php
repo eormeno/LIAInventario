@@ -39,10 +39,13 @@
             <!-- Imagen Actual -->
             <label for="imagen">Imagen actual</label>
             @if($asset->imagen)
-                <div class="mt-2">
-                    <p>Vista previa de la imagen actual:</p>
-                    <img src="{{ asset('storage/' . $asset->imagen) }}" alt="Vista previa" class="w-32 h-32 object-cover mb-2">
-                </div>
+                @if (Str::startsWith($asset->imagen, 'data:image'))
+                    <img src="{{ $asset->imagen }}" alt="Imagen Base64" class="w-32 h-32 object-cover rounded shadow-sm">
+                         @else
+                            <img src="{{ asset('storage/' . $asset->imagen) }}" alt="Imagen subida" class="w-32 h-32 object-cover rounded shadow-sm">
+                @endif
+            @else
+                <span class="text-[#212121]">Sin imagen</span>
             @endif
 
             <!-- Subir nueva imagen -->
