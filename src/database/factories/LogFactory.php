@@ -18,9 +18,10 @@ class LogFactory extends Factory
      */
     public function definition(): array {
         $users =  User::all();
+        $tickets = \App\Models\Ticket::all();
         return [
             'user_id' => $users->random()->id,
-            //'ticket_id' => $tickets->random()->id,
+            'ticket_id' => $tickets->random()->id,
 
             'estado' => $this->faker->randomElement(['abierto', 'en progreso', 'cerrado']),
             'imagen' => $this->generateBase64Image(), 

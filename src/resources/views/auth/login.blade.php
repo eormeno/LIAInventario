@@ -235,9 +235,28 @@
             transition: all 0.2s ease;
         }
 
+        .button2 {
+            background-color: white;
+            color: #000000;
+            padding: 0.75rem 1.5rem;
+            border: groove;
+            border-radius: 0.5rem;
+            border-color:var(--primary-color);
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
         .button:hover {
             background-color: var(--primary-hover);
             transform: translateY(-1px);
+        }
+
+        .button2:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            color:white;
         }
 
         .button:active {
@@ -313,7 +332,7 @@
             </div>
 
             <div class="form-group">
-                <label for="password">Password</label>
+                <label for="password">Contraseña</label>
                 <input 
                     id="password" 
                     type="password" 
@@ -332,16 +351,16 @@
                     class="checkbox"
                 >
                 <label for="remember_me" class="remember-text">
-                    Remember me
+                    Recuerdame
                 </label>
             </div>
 
             <div class="button-container">
-                <button type="button" class="button" onclick="location.href='{{ route('register') }}'">
-                    Register
+                <button type="button" class="button2" onclick="location.href='{{ route('register') }}'">
+                    Registrarse
                 </button>
                 <button type="submit" class="button">
-                    Log in
+                    Ingresar
                 </button>
             </div>
         </form>

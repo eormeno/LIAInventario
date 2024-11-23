@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Http;
 
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Place>
- */
+// /**
+//  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Place>
+//  */
 class PlaceFactory extends Factory
 {
     public function definition()

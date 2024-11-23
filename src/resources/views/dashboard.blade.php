@@ -1,4 +1,4 @@
-<x-app-layout>
+{{-- <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Dashboard') }}
@@ -51,4 +51,65 @@
             </div>
         </div>
     </div>
+</x-app-layout> --}}
+
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            {{ __('Inicio') }}
+        </h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden sm:rounded-lg">
+                @role('registered')
+                    <div class="m-4 text-xl text-gray-600 dark:text-gray-200">
+                        <b>Usted está registrado en el sistema.</b><br>
+                        Para poder acceder a funcionalidades específicas, debe dirigirse personalmente al área de administración de la organización.
+                    </div>
+                @endrole
+
+                @role('root')
+                    <div class="bg-[#3949ab] shadow-md rounded-lg p-4 m-4">
+                        <div class="text-xl text-gray-600 dark:text-gray-200">
+                            <b>Usted es usuario raíz.</b><br>
+                            Puede acceder a todas las funcionalidades del sistema.
+                        </div>
+                    </div>
+
+                    <!-- Ticket List Section -->
+                    <div class="m-4 bg-white shadow-lg rounded-lg">
+                        <div class="px-6 py-4 border-b">
+                            <h2 class="text-lg font-semibold text-gray-700">Tickets</h2>
+                        </div>
+                        <div class="divide-y divide-gray-200">
+                           @foreach ($tickets as $ticket)
+    <div class="flex justify-between items-center p-4 hover:bg-gray-50">
+        <div class="flex items-center">
+            <h3 class="text-sm font-medium text-gray-700 mr-3">Ticket #{{ $ticket->id }}</h3>
+            <span class="text-sm text-gray-500">{{ $ticket->description }}</span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span class="bg-yellow-100 text-yellow-700 text-sm px-2 py-0.5 rounded-full">{{ $ticket->status }}</span>
+            <span class="text-sm text-gray-400">{{ $ticket->created_at->format('Y-m-d') }}</span>
+            <button class="text-blue-500 hover:text-blue-700 text-sm font-medium">
+                Ver
+            </button>
+        </div>
+    </div>
+@endforeach
+
+                        </div>
+                    </div>
+                @else
+                    @can('roles-list')
+                        <p>Roles List</p>
+                    @endcan
+                @endrole
+            </div>
+        </div>
+    </div>
 </x-app-layout>
+
+

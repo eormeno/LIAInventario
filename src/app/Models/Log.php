@@ -10,7 +10,7 @@ class Log extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
-        //'ticket',
+        'ticket',
         'estado',
         'imagen',
         'comentario',
@@ -19,4 +19,10 @@ class Log extends Model
         'email',
         'direccion',
     ];
+
+    // Relación con Ticket
+    public function ticket()
+    {
+        return $this->belongsTo(Ticket::class);
+    }
 }
