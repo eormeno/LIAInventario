@@ -29,9 +29,11 @@ public function up()
         $table->id();
         $table->unsignedBigInteger('ticket_id');
         $table->unsignedBigInteger('user_id');
-        $table->string('action');
+    //    $table->string('action');
         $table->timestamps();
-        
+        $table->string('estado');
+        $table->string('comentario');
+        $table->string('imagen')->nullable();
         // Relaciones con los modelos
         $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
         $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

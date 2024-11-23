@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder {
         fake()->seed(10);   // Esto es para generar siempre los mismos datos
         $this->call(PermissionsSeeder::class);
         $this->call(UsersSeeder::class);
+        $this->call(TicketSeeder::class);
         $this->call(AssetSeeder::class);
         $this->call(LogSeeder::class);
         $this->call(PlaceSeeder::class);

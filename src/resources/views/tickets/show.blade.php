@@ -49,7 +49,7 @@
     <ul>
         @foreach($logs as $log)
             <li>
-                <strong>{{ $log->action }}</strong> por {{ $log->user->name }} el {{ $log->created_at->format('Y-m-d H:i') }}
+                <strong>{{ $log->comentario }}</strong> por {{ $log->user->name }} el {{ $log->created_at->format('Y-m-d H:i') }}
             </li>
         @endforeach
     </ul>

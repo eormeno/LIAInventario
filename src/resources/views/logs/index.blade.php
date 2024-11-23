@@ -7,6 +7,7 @@
                 <thead>
                     <tr class="text-white bg-[#1a237e] border-b border-[#e0e0e0]">
                         <th class="py-3 px-4 text-left text-sm font-medium">Usuario</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium">Ticket</th>
                         <th class="py-3 px-4 text-left text-sm font-medium">Estado</th>
                         <th class="py-3 px-4 text-left text-sm font-medium">Imagen</th>
                         <th class="py-3 px-4 text-left text-sm font-medium">Comentario</th>
@@ -18,6 +19,7 @@
                     @foreach ($logs as $key =>$log)
                         <tr class="{{ $key % 2 === 0 ? 'bg-gray-100' : 'bg-white' }} hover:bg-[#f5f5f5] transition-colors duration-150 border-b border-[#e0e0e0]">
                             <td class="py-3 px-4 text-sm">{{ $log->user_id }}</td>
+                            <td class="py-3 px-4 text-sm">{{ $log->ticket_id }}</td>
                             <td class="py-3 px-4 text-sm">{{ $log->estado }}</td>
                             <td class="py-3 px-4">
                                 @if($log->imagen)
