@@ -46,7 +46,7 @@
                 </div>
             </div>
              <div class="mt-6">
-                            {{ $data->links() }}
+                            {{ $tickets->links() }}
             </div>
         </div>
     </div>

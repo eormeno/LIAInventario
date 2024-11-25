@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Log;  // Asegúrate de que esté usando tu modelo Log y no Monolog
 
 
@@ -11,15 +12,13 @@ class TicketController extends Controller
 {
      // Este método maneja la ruta para mostrar todos los tickets
      public function index()
-     {
-         // Obtener todos los tickets desde la base de datos
-        //  $tickets = Ticket::all();
-         $tickets = Ticket::with('creator')->get();
-         $data = Ticket::latest()->paginate(5);
- 
-         // Retornar la vista y pasar los tickets
-         return view('tickets.index', compact('tickets','data'));
-     }
+{
+    // Obtener los tickets con su relación 'creator' y aplicar la paginación
+    $tickets = Ticket::with('creator')->latest()->paginate(5);
+
+    // Retornar la vista y pasar los tickets paginados
+    return view('tickets.index', compact('tickets'));
+}
 
     public function create()
     {
@@ -40,16 +39,10 @@ class TicketController extends Controller
         'subject' => $request->subject,
         'description' => $request->description,
         'status' => $request->status,
+        'created_by' => Auth::id(), // Asignar el ID del usuario autenticado
     ]);
 
-    // Crear el primer log asociado al ticket
-    $ticket->logs()->create([
-        'description' => 'Ticket creado', // Mensaje inicial
-        'user_id' => auth()->id(), // Asignar el usuario autenticado
-    ]);
-
-    // Redirigir a la lista de tickets con un mensaje de éxito
-    return redirect()->route('tickets.index')->with('success', 'Ticket creado correctamente con el primer log.');
+    return redirect()->route('tickets.index')->with('success', 'Ticket creado exitosamente.');
 }
 
 
