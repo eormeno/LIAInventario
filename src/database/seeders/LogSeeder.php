@@ -2,17 +2,22 @@
 
 namespace Database\Seeders;
 
-use App\Models\Log;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Log;
+use App\Models\User;
+use App\Models\Ticket;
 
 class LogSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        Log::factory(10)->create();
+        // Generar logs asociados a tickets existentes
+        $tickets = Ticket::all();
+        foreach ($tickets as $ticket) {
+            Log::factory()->count(3)->create([
+                'user_id' => User::inRandomOrder()->first()->id,
+                'ticket_id' => $ticket->id,
+            ]);
+        }
     }
 }

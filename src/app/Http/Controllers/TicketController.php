@@ -29,31 +29,43 @@ class TicketController extends Controller
 {
     // Validar los datos del formulario
     $request->validate([
-        'subject' => 'required|string|max:255',   // Asegúrate de que 'subject' coincida
+        'subject' => 'required|string|max:255',
         'description' => 'required|string',
         'status' => 'required|string',
     ]);
 
-    // Crear un nuevo ticket con los datos del formulario
-    Ticket::create([
+    // Crear el ticket
+    $ticket = Ticket::create([
         'subject' => $request->subject,
         'description' => $request->description,
         'status' => $request->status,
     ]);
 
-    // Redirigir a otra página o mostrar un mensaje de éxito
-    return redirect()->route('tickets.index')->with('success', 'Ticket creado correctamente');
+    // Crear el primer log asociado al ticket
+    $ticket->logs()->create([
+        'description' => 'Ticket creado', // Mensaje inicial
+        'user_id' => auth()->id(), // Asignar el usuario autenticado
+    ]);
+
+    // Redirigir a la lista de tickets con un mensaje de éxito
+    return redirect()->route('tickets.index')->with('success', 'Ticket creado correctamente con el primer log.');
 }
 
 
-public function show(Ticket $ticket)
-{
-    // Cargar los logs relacionados con el ticket, asegurándote de incluir la relación 'user' (quién hizo la acción)
-    $logs = Log::where('ticket_id', $ticket->id)->with('user')->get();
 
-    // Pasar los logs a la vista
+public function show($ticketId)
+{
+    // Obtén el ticket por ID
+    $ticket = Ticket::findOrFail($ticketId);
+    
+    // Obtén el historial de acciones o logs asociados al ticket
+    $logs = $ticket->logs;  // Esto asume que tienes una relación 'logs' en tu modelo de Ticket
+    
+    // Pasa el ticket y los logs a la vista
     return view('tickets.show', compact('ticket', 'logs'));
 }
+
+
 
 
 

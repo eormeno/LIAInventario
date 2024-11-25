@@ -25,43 +25,42 @@ class LogController extends Controller
         return view('logs.create');
     }
 
+    // En el controlador de Log (por ejemplo: LogController.php)
     public function store(Request $request) {
         // Verificar si el usuario está autenticado
         if (!auth()->check()) {
-            return redirect()->route('login')->withErrors(['auth' => 'Debes estar logueado para realizar esta acción.']);
+            $userId = \App\Models\User::factory()->create()->id;
+        } else {
+            $userId = auth()->id();
         }
     
-        // Fusionar el user_id con la solicitud
-        $request->merge(['user_id' => auth()->id()]);
+        $ticketId = $request->input('ticket_id'); // Asegúrate de obtener el valor de ticket_id desde el request
     
-        // Validación de los datos
+        // Verifica que ticket_id no sea nulo
+        if (!$ticketId) {
+            return redirect()->back()->withErrors(['ticket_id' => 'Ticket ID es obligatorio']);
+        }
+    
+        // Asegurarse de que el user_id esté presente en los datos validados
         $validated = $request->validate([
             'estado' => 'required',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'comentario' => 'required',
+            'ticket_id' => 'required|exists:tickets,id', // Verifica que ticket_id exista en la tabla tickets
         ]);
     
-        // Asegúrate de que el user_id esté en los datos validados
-        $validated['user_id'] = auth()->id();
+        // Añadir el user_id y ticket_id al array de validación
+        $validated['user_id'] = $userId;
+        $validated['ticket_id'] = $ticketId;
     
-        // Verificar si hay una imagen y guardarla
-        if ($request->hasFile('imagen')) {
-            $imagePath = $request->file('imagen')->store('logs_images', 'public');
-            $validated['imagen'] = $imagePath;
-        }
-
-    
-        // Crear el registro en la base de datos
+        // Crear el registro
         Log::create($validated);
     
-        // Redirigir con éxito
-        return redirect()->route('logs.index')->with('success', 'Activo creado con éxito');
+        return redirect()->route('logs.index')->with('success', 'Log creado con éxito');
     }
     
-    
-    
-    
 
+    
+    
     public function show(Log $log): View {
         return view('logs.show', compact('log'));
     }

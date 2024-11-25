@@ -2,21 +2,39 @@
 
 namespace Database\Seeders;
 
-use App\Models\Log;
-use App\Models\Ticket;
 use Illuminate\Database\Seeder;
+use App\Models\Ticket;
+use App\Models\Log;
+use App\Models\User;
+use App\Models\Asset;
+use App\Models\Place;
+use Faker\Factory as Faker;
 
 class TicketSeeder extends Seeder
 {
     public function run()
     {
-        // Crear 10 tickets
-        $tickets = Ticket::factory(10)->create();
+        $faker = Faker::create();
 
-        // Crear logs para cada ticket
-        $tickets->each(function ($ticket) {
-            Log::factory(3)->create(['ticket_id' => $ticket->id]);
-        });
+        for ($i = 0; $i < 10; $i++) {
+            $ticket = Ticket::create([
+                'subject' => $faker->sentence,
+                'description' => $faker->paragraph,
+                'status' => 'open',
+                'created_by' => User::inRandomOrder()->first()->id,
+                'asset_id' => Asset::inRandomOrder()->first()->id,
+                'place_id' => Place::inRandomOrder()->first()->id,
+            ]);
+
+            Log::create([
+                'user_id' => $ticket->created_by,
+                'ticket_id' => $ticket->id,
+                'estado' => 'Creado',
+                'comentario' => 'Ticket creado automáticamente.',
+                'fecha' => now(),
+            ]);
+        }
     }
 }
+
 
