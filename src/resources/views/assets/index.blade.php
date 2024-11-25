@@ -1,5 +1,5 @@
 <x-event-layout>
-    <x-slot name="title">Activos</x-slot>
+    <x-slot name="title">Administración de activos</x-slot>
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">

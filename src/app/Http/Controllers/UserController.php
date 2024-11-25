@@ -15,7 +15,7 @@ class UserController extends Controller {
     use DebugHelper, ToastTrigger;
 
     public function index(Request $request) {
-        $data = User::latest()->paginate(7);
+        $data = User::latest()->paginate(5);
         return view('users.index', compact('data'));
     }
 

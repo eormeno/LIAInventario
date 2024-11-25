@@ -1,6 +1,6 @@
 <x-event-layout>
     <x-slot name="title">
-        {{ __('Roles manager') }}
+        {{ __('Administración de roles') }}
     </x-slot>
 
     <div class="py-6">

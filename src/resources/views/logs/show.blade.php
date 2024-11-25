@@ -28,7 +28,7 @@
         </div>
         <!-- Botón para volver al listado de logs -->
         <div class="mt-6">
-            <a href="{{ route('logs.index') }}" class="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">Volver</a>
+            <a href="{{ route('logs.index') }}" class="inline-block px-4 py-2 bg-[#1a237e] text-white rounded hover:bg-indigo-700 transition">Volver</a>
         </div>
     </div>
 </x-crud-layout>

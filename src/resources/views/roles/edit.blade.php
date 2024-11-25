@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Roles manager') }}
+        <h2 class="font-semibold text-xl text-white leading-tight">
+            {{ __('Administración de roles') }}
         </h2>
     </x-slot>
 
@@ -12,7 +12,7 @@
 
                     <a href="{{ route('roles.index') }}"
                         class="inline-flex items-center px-4 py-2 mb-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150 float-end">
-                        {{ __('Roles list') }}
+                        {{ __('Lista de roles') }}
                     </a>
 
                     <form action="{{ route('roles.update', $role->id) }}" method="POST">
@@ -41,7 +41,7 @@
                             </div>
                             <div class="flex items-center justify-end mt-4">
                                 <x-button class="ms-4">
-                                    {{ __('Modify role') }}
+                                    {{ __('Modificar rol') }}
                                 </x-button>
                             </div>
                         </div>

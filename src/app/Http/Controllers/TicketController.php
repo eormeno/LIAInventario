@@ -15,9 +15,10 @@ class TicketController extends Controller
          // Obtener todos los tickets desde la base de datos
         //  $tickets = Ticket::all();
          $tickets = Ticket::with('creator')->get();
+         $data = Ticket::latest()->paginate(5);
  
          // Retornar la vista y pasar los tickets
-         return view('tickets.index', compact('tickets'));
+         return view('tickets.index', compact('tickets','data'));
      }
 
     public function create()

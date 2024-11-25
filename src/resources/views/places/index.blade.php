@@ -1,25 +1,25 @@
 <x-crud-layout>
-    <x-slot name="title">Lugares</x-slot>
+    <x-slot name="title">Administración de lugares</x-slot>
 
     <a href="{{ route('places.create') }}"
-        class="inline-flex items-center px-4 py-2 mb-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">
+        class="inline-flex items-center px-4 py-2 mb-2  bg-[#1a237e] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">
         Nuevo lugar
     </a>
     <div class="overflow-x-hidden">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
-                <tr>
+                <tr class="text-white bg-[#1a237e] border-b border-[#e0e0e0]">
                     <th scope="col"
-                        class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        class="py-3 px-4 text-left text-sm font-medium">
                         ID</th> <!-- Nueva columna para el ID -->
                     <th scope="col"
-                        class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        class="py-3 px-4 text-left text-sm font-medium">
                         Nombre</th>
                     <th scope="col"
-                        class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        class="py-3 px-4 text-left text-sm font-medium">
                         Descripción</th>
                     <th scope="col"
-                        class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        class="py-3 px-4 text-left text-sm font-medium">
                         Acciones</th>
                 </tr>
             </thead>

@@ -45,6 +45,9 @@
                     @endforeach
                 </div>
             </div>
+             <div class="mt-6">
+                            {{ $data->links() }}
+            </div>
         </div>
     </div>
 </x-app-layout>
