@@ -62,7 +62,7 @@ class Ticket extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['subject', 'description', 'status', 'created_by', 'updated_by', 'asset_id', 'place_id'];
+    protected $fillable = ['subject', 'created_by', 'asset_id'];
 
     public function logs()
     {
@@ -74,19 +74,9 @@ class Ticket extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function updater()
-    {
-        return $this->belongsTo(User::class, 'updated_by');
-    }
-
     public function asset()
     {
         return $this->belongsTo(Asset::class);
-    }
-
-    public function place()
-    {
-        return $this->belongsTo(Place::class);
     }
 }
 

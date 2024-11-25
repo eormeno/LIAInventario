@@ -13,8 +13,7 @@ class Log extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'ticket_id', 'estado', 'comentario', 'fecha',
-        'telefono', 'email', 'direccion'
+        'user_id', 'ticket_id', 'estado', 'comentario', 'created_at'
     ];
 
     public function ticket()

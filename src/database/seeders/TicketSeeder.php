@@ -19,11 +19,8 @@ class TicketSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             $ticket = Ticket::create([
                 'subject' => $faker->sentence,
-                'description' => $faker->paragraph,
-                'status' => 'open',
                 'created_by' => User::inRandomOrder()->first()->id,
                 'asset_id' => Asset::inRandomOrder()->first()->id,
-                'place_id' => Place::inRandomOrder()->first()->id,
             ]);
 
             Log::create([
@@ -31,7 +28,7 @@ class TicketSeeder extends Seeder
                 'ticket_id' => $ticket->id,
                 'estado' => 'Creado',
                 'comentario' => 'Ticket creado automáticamente.',
-                'fecha' => now(),
+                'created_at' => now(),
             ]);
         }
     }

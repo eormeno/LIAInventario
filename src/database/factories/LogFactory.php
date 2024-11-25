@@ -19,11 +19,10 @@ class LogFactory extends Factory
         return [
             'user_id' => $user->id, // Asegurarse de que el user_id está correctamente asignado
             'ticket_id' => $ticket->id, // Asegurarse de que el ticket_id está correctamente asignado
-            'estado' => $this->faker->randomElement(['abierto', 'en progreso', 'cerrado']),
+            'estado' => $this->faker->randomElement(['Creado', 'En progreso', 'Cerrado']),
             'imagen' => $this->generateBase64Image(),
             'comentario' => $this->faker->sentence(),
             'created_at' => now(),
-            'updated_at' => now(),
         ];
     }
 
