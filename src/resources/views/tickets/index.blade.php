@@ -35,7 +35,12 @@
                                 <!-- ID del ticket, asunto y estado -->
                                 <h3 class="text-sm font-medium text-gray-700">Ticket #{{ $ticket->id }}</h3>
                                 <span class="text-sm text-gray-500">{{ $ticket->subject }}</span>
-                                <span class="bg-yellow-100 text-yellow-700 text-sm px-2 py-0.5 rounded-full">{{ $ticket->status }}</span>
+                              
+                                @if($ticket->logs->isNotEmpty())
+                                    <span class="bg-yellow-100 text-yellow-700 text-sm px-2 py-0.5 rounded-full">{{ $ticket->logs->first()->estado }}</span>
+                                @else
+                                    <p> No disponible</p>
+                                @endif
                                <a href="{{ route('tickets.show', $ticket->id) }}" class="text-blue-500 hover:text-blue-700 text-sm font-medium">
                                     Ver
                                 </a>

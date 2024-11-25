@@ -22,7 +22,7 @@
 
                     <div class="mb-4">
                         <label class="block text-gray-700">Estado:</label>
-                        <span class="bg-yellow-100 text-yellow-700 text-sm px-2 py-0.5 rounded-full">{{ $ticket->status }}</span>
+                        <span class="bg-yellow-100 text-yellow-700 text-sm px-2 py-0.5 rounded-full">{{ $ticket->logs->last()->estado }}</span>
                     </div>
 
                     <div class="mb-4">
@@ -65,6 +65,12 @@
             Resolver Ticket
         </button>
     </form>
+
+    <div class="mt-4">
+        <a href="{{ route('logs.create',['ticket_id' => $ticket->id]) }}" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700">
+            Agregar nuevo Log
+        </a>
+    </div>
 @endif
 
                     <div class="mt-4">

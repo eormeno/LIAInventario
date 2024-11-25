@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Log;
+use App\Models\Ticket;
 use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -21,9 +22,17 @@ class LogController extends Controller
         return view('logs.index', compact('logs'));
     }
 
-    public function create(): View {
-        return view('logs.create');
-    }
+    public function create(Request $request)
+{
+    // Obtener el ID del ticket desde la URL
+    $ticket_id = $request->query('ticket_id'); // o $request->ticket_id si es un parámetro directo
+
+    // Aquí puedes hacer lo que necesites, por ejemplo, cargar el ticket:
+    $ticket = Ticket::findOrFail($ticket_id);
+
+    // Pasar el ticket a la vista para que el usuario pueda agregar un log relacionado
+    return view('logs.create', compact('ticket_id'));
+}
 
     // En el controlador de Log (por ejemplo: LogController.php)
     public function store(Request $request) {
@@ -35,7 +44,7 @@ class LogController extends Controller
         }
     
         $ticketId = $request->input('ticket_id'); // Asegúrate de obtener el valor de ticket_id desde el request
-    
+
         // Verifica que ticket_id no sea nulo
         if (!$ticketId) {
             return redirect()->back()->withErrors(['ticket_id' => 'Ticket ID es obligatorio']);
@@ -55,7 +64,8 @@ class LogController extends Controller
         // Crear el registro
         Log::create($validated);
     
-        return redirect()->route('logs.index')->with('success', 'Log creado con éxito');
+        return redirect()->route('tickets.show', ['ticket' => $ticketId])->with('success', 'Log creado con éxito');
+
     }
     
 

@@ -3,9 +3,10 @@
     <form action="{{ route('logs.store') }}" method="POST" enctype="multipart/form-data">
 
         @csrf
+        <input type="hidden" name="ticket_id" value="{{ $ticket_id }}">
         <label for="estado">Estado</label>
         <select name="estado" required>
-            <option value="abierto">Abierto</option>
+            <option value="En progreso">En progreso</option>
         </select>
                     <!-- Imagen -->
         <div>

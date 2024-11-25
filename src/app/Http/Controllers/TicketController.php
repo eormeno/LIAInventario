@@ -14,8 +14,12 @@ class TicketController extends Controller
      public function index()
 {
     // Obtener los tickets con su relación 'creator' y aplicar la paginación
-    $tickets = Ticket::with('creator')->latest()->paginate(5);
-
+    $tickets = Ticket::with([
+        'creator', 
+        'logs' => function ($query) {
+            $query->latest()->take(1); // Obtiene solo el último log
+        }
+    ])->latest()->paginate(5);
     // Retornar la vista y pasar los tickets paginados
     return view('tickets.index', compact('tickets'));
 }
@@ -37,9 +41,14 @@ class TicketController extends Controller
     // Crear el ticket
     $ticket = Ticket::create([
         'subject' => $request->subject,
-        'description' => $request->description,
-        'status' => $request->status,
         'created_by' => Auth::id(), // Asignar el ID del usuario autenticado
+    ]);
+
+    $log = Log::create([
+        'ticket_id'=> $ticket->id,
+        'comentario' => $request->description,
+        'estado' => $request->status,
+        'user_id' => Auth::id(), // Asignar el ID del usuario autenticado
     ]);
 
     return redirect()->route('tickets.index')->with('success', 'Ticket creado exitosamente.');

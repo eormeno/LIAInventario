@@ -4,6 +4,11 @@
     <!-- Tabla de logs -->
     <div class="overflow-x-auto">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="mt-4">
+                <a href="{{ route('logs.create') }}" class="inline-flex items-center px-4 py-2 mb-2 bg-[#1a237e] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">
+                    Crear Nuevo Log
+                </a>
+            </div>
     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
         <div class="mx-0">
             <table class="min-w-full bg-white border border-[#e0e0e0] shadow-sm">
