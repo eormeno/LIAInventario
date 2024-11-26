@@ -61,53 +61,86 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden sm:rounded-lg">
-                @role('registered')
-                    <div class="m-4 text-xl text-gray-600 dark:text-gray-200">
-                        <b>Usted está registrado en el sistema.</b><br>
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            @role('registered')
+                <div class="bg-white overflow-hidden shadow sm:rounded-lg p-6">
+                    <div class="text-lg text-gray-600 dark:text-gray-200">
+                        <span class="font-bold">Usted está registrado en el sistema.</span><br>
                         Para poder acceder a funcionalidades específicas, debe dirigirse personalmente al área de administración de la organización.
                     </div>
-                @endrole
+                </div>
+            @endrole
 
-                @role('root')
-                    <div class="bg-[#3949ab] shadow-md rounded-lg p-4 m-4">
-                        <div class="text-xl text-gray-600 dark:text-gray-200">
-                            <b>Usted es usuario raíz.</b><br>
-                            Puede acceder a todas las funcionalidades del sistema.
-                        </div>
+            @role('root')
+                <div class="bg-gray-200 text-gray-500 shadow-md rounded-lg p-6">
+                    <div class="text-xl">
+                        <span class="font-bold">Usted es usuario raíz.</span><br>
+                        Puede acceder a todas las funcionalidades del sistema.
                     </div>
+                </div>
+            @endrole
 
-                    <!-- Ticket List Section -->
-                    <div class="m-4 bg-white shadow-lg rounded-lg">
-                        <div class="px-6 py-4 border-b">
-                            <h2 class="text-lg font-semibold text-gray-700">Tickets</h2>
-                        </div>
-                        <div class="divide-y divide-gray-200">
-                           @foreach ($tickets as $ticket)
-    <div class="flex justify-between items-center p-4 hover:bg-gray-50">
-        <div class="flex items-center">
-            <h3 class="text-sm font-medium text-gray-700 mr-3">Ticket #{{ $ticket->id }}</h3>
-            <span class="text-sm text-gray-500">{{ $ticket->description }}</span>
-        </div>
-        <div class="flex items-center space-x-4">
-            <span class="bg-yellow-100 text-yellow-700 text-sm px-2 py-0.5 rounded-full">{{ $ticket->status }}</span>
-            <span class="text-sm text-gray-400">{{ $ticket->created_at->format('Y-m-d') }}</span>
-            <button class="text-blue-500 hover:text-blue-700 text-sm font-medium">
-                Ver
-            </button>
-        </div>
-    </div>
-@endforeach
-
-                        </div>
+            @role('root')
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <div class="px-6 py-4 bg-[#3949ab] border-b flex justify-between items-center">
+                        <h2 class="text-lg font-semibold text-white">Tickets Recientes</h2>
+                        <a href="{{ route('tickets.index') }}" class="text-blue-100 hover:text-blue-200 text-sm">
+                            Ver todos los tickets
+                        </a>
                     </div>
-                @else
-                    @can('roles-list')
-                        <p>Roles List</p>
-                    @endcan
-                @endrole
-            </div>
+                    
+                    @if($tickets->count() > 0)
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
+                                    <th class="px-4 py-3 text-left">N° Ticket</th>
+                                    <th class="px-4 py-3 text-left">Asunto</th>
+                                    <th class="px-4 py-3 text-left">Estado</th>
+                                    <th class="px-4 py-3 text-left">Fecha</th>
+                                    <th class="px-4 py-3 text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                @foreach ($tickets->take(5) as $ticket)
+                                    <tr class="hover:bg-gray-50 transition duration-150">
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            #{{ $ticket->id }}
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $ticket->subject }}
+                                        </td>
+                                        <td class="px-4 py-4">
+                                            <span 
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                {{ $ticket->logs->first()->estado == 'Creado' ? 'bg-yellow-100 text-yellow-800' : '' }} 
+                                                {{ $ticket->logs->first()->estado == 'En Progreso' ? 'bg-green-100 text-green-800' : '' }} 
+                                                {{ $ticket->logs->first()->estado == 'Cerrado' ? 'bg-red-100 text-red-800' : '' }} 
+                                                {{ !in_array($ticket->logs->first()->estado, ['Creado', 'En Progreso', 'Cerrado']) ? 'bg-gray-100 text-gray-800' : '' }}">
+                                                {{ $ticket->logs->first()->estado }}
+                                            </span>
+                                        </td>
+
+
+                                        <td class="px-4 py-4 text-sm text-gray-500">
+                                            {{ $ticket->created_at->format('Y-m-d') }}
+                                        </td>
+                                        <td class="px-4 py-4 text-right">
+                                            <a href="{{ route('tickets.show', $ticket->id) }}" 
+                                               class="text-blue-600 hover:text-blue-900 text-sm">
+                                                Ver
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @else
+                        <div class="text-center py-6 text-gray-500">
+                            No hay tickets recientes
+                        </div>
+                    @endif
+                </div>
+            @endrole
         </div>
     </div>
 </x-app-layout>

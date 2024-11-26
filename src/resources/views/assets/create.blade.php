@@ -49,12 +49,8 @@
             <!-- Tipo -->
             <div>
                 <label for="tipo" class="block text-sm font-medium text-gray-700">Tipo:</label>
-                <select name="tipo" id="tipo" 
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300">
-                    <option value="Electrónico">Electrónico</option>
-                    <option value="Mueble">Mueble</option>
-                    <option value="Vehículo">Vehículo</option>
-                </select>
+                <input type="text" name="tipo" id="tipo"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300">
             </div>
 
             <!-- Cantidad -->

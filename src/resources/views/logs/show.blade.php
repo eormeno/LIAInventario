@@ -16,14 +16,14 @@
             <div class="col-span-1 sm:col-span-2">
                 <p class="font-semibold mb-2">Imagen:</p>
                 @if($log->imagen)
-                    @if (Str::startsWith($log->imagen, 'data:image'))
-                        <img src="{{ $log->imagen }}" alt="Imagen Base64" class="w-64 h-64 object-contain">
-                    @else
-                        <img src="{{ asset('storage/' . $log->imagen) }}" alt="Imagen subida" class="w-64 h-64 object-contain">
-                    @endif
-                @else
-                    <span>Sin imagen disponible</span>
-                @endif
+                                    @if (Str::startsWith($log->imagen, 'data:image'))
+                                        <img src="{{ $log->imagen }}" alt="Imagen Base64" class="w-32 h-32 object-cover rounded shadow-sm">
+                                    @else
+                                        <img src="{{ asset('storage/' . $log->imagen) }}" alt="Imagen subida" class="w-32 h-32 object-cover rounded shadow-sm">
+                                    @endif
+                                @else
+                                    <span class="text-[#212121]">Sin imagen</span>
+                                @endif
             </div>
         </div>
         <!-- Botón para volver al listado de logs -->

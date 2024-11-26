@@ -243,6 +243,7 @@
             line-height: 1.6;
         }
 
+
         @media (max-width: 1024px) {
             .hero-section {
                 flex-direction: column;
