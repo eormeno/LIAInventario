@@ -11,6 +11,7 @@
             <p><span class="font-semibold">Estado:</span> {{ $log->estado }}</p>
             <p><span class="font-semibold">Comentario:</span> {{ $log->comentario }}</p>
             <p><span class="font-semibold">Fecha:</span> {{ $log->created_at }}</p>
+
             
             <!-- Mostrar imagen -->
             <div class="col-span-1 sm:col-span-2">

@@ -54,8 +54,15 @@ class LogController extends Controller
         $validated = $request->validate([
             'estado' => 'required',
             'comentario' => 'required',
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'ticket_id' => 'required|exists:tickets,id', // Verifica que ticket_id exista en la tabla tickets
         ]);
+
+        if ($request->hasFile('imagen')) {
+            // Guardar la nueva imagen
+            $imagePath = $request->file('imagen')->store('logs_images', 'public');
+            $validated['imagen'] = $imagePath;
+        }
     
         // Añadir el user_id y ticket_id al array de validación
         $validated['user_id'] = $userId;
@@ -80,9 +87,7 @@ class LogController extends Controller
     }
 
     public function update(Request $request, Log $log): RedirectResponse {
-        if ($request->hasFile('imagen')) {
-            \Log::info('Imagen recibida:', [$request->file('imagen')]); // Log de la imagen recibida
-        }
+
         $validated = $request->validate([
             'estado' => 'required',
             'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -90,6 +95,7 @@ class LogController extends Controller
         ]);
         // Manejar la subida de la nueva imagen si es necesario
         if ($request->hasFile('imagen')) {
+            dd('hola');
             // Borrar la imagen anterior si existe
             if ($log->imagen) {
                 Storage::delete('public/' . $log->imagen);
