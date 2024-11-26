@@ -76,7 +76,7 @@
                                         </div>
                                     </div>
                                     
-                                    <p class="text-gray-700 dark:text-gray-800">
+                                    <p class="text-gray-700 dark:text-gray-800 truncate max-w-xs">
                                         {{ $log->comentario }}
                                     </p>
                                     
