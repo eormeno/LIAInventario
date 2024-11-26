@@ -79,7 +79,8 @@ class LogController extends Controller
     
     
     public function show(Log $log): View {
-        return view('logs.show', compact('log'));
+        $ticket = $log->ticket;
+        return view('logs.show', compact('log','ticket'));
     }
 
     public function edit(Log $log): View {

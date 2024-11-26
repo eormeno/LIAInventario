@@ -80,7 +80,7 @@
                                         {{ $log->comentario }}
                                     </p>
                                     
-                                    <a href="{{ route('logs.show', $log->id) }}" 
+                                    <a href="{{ route('logs.show', $log->id,['ticket_id' => $ticket->id]) }}" 
                                        class="absolute bottom-2 right-2 text-blue-500 hover:text-blue-700 text-sm">
                                         Ver detalles
                                     </a>
