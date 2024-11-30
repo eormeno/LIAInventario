@@ -16,13 +16,16 @@
                         {{ __('Inicio') }}
                     </x-nav-link>
 
+                    @hasrole('root')
                     <x-nav-link href="{{ route('roles.index') }}" :active="request()->routeIs('roles.index')">
                         {{ __('Roles') }}
                     </x-nav-link>
+                    
 
                     <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
                         {{ __('Usuarios') }}
                     </x-nav-link>
+                    
 
                     <x-nav-link href="{{ route('assets.index') }}" :active="request()->routeIs('assets.index')">
                         {{ __('Activos') }}
@@ -31,7 +34,7 @@
                     <x-nav-link href="{{ route('places.index') }}" :active="request()->routeIs('places.index')">
                         {{ __('Lugares') }}
                     </x-nav-link>
-                    
+                    @endhasrole
 
                     <x-nav-link href="{{ route('logs.index') }}" :active="request()->routeIs('logs.index')">
                         {{ __('Logs') }}
@@ -179,7 +182,7 @@
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Inicio') }}
             </x-responsive-nav-link>
-
+            @hasrole('root')
             <x-responsive-nav-link href="{{ route('roles.index') }}" :active="request()->routeIs('roles.index')">
                 {{ __('Roles') }}
             </x-responsive-nav-link>
@@ -192,7 +195,21 @@
             <x-responsive-nav-link href="{{ route('assets.index') }}" :active="request()->routeIs('assets.index')">
                 {{ __('Activos') }}
             </x-responsive-nav-link>
+            
+            <x-responsive-nav-link href="{{ route('places.index') }}" :active="request()->routeIs('places.index')">
+                {{ __('Lugares') }}
+            </x-responsive-nav-link>
+            @endhasrole
+            <x-responsive-nav-link href="{{ route('logs.index') }}" :active="request()->routeIs('logs.index')">
+                {{ __('Logs') }}
+            </x-responsive-nav-link>
+            
+            <x-responsive-nav-link href="{{ route('tickets.index') }}" :active="request()->routeIs('tickets.index')">
+                {{ __('Tickets') }}
+            </x-responsive-nav-link>
+
         </div>
+        
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
