@@ -71,7 +71,12 @@
                 </table>
             </div>
             <div class="mt-6">
-                {{ $tickets->links() }}
+                @if($tickets instanceof \Illuminate\Contracts\Pagination\Paginator)
+    {{ $tickets->links() }}
+@else
+    <p>No hay tickets disponibles.</p>
+@endif
+
             </div>
         </div>
     </div>

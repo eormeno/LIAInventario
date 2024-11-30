@@ -69,34 +69,7 @@
                         Para poder acceder a funcionalidades específicas, debe dirigirse personalmente al área de administración de la organización.
                     </div>
                 </div>
-            @else
-                    @can('roles-list')
-                        <p>Roles List</p>
-                    @endcan
-                    @can('roles-create')
-                        <p>Roles Create</p>
-                    @endcan
-                    @can('roles-edit')
-                        <p>Roles Edit</p>
-                    @endcan
-                    @can('roles-delete')
-                        <p>Roles Delete</p>
-                    @endcan
-                    @can('users-list')
-                        <p>Users List</p>
-                    @endcan
-                    @can('users-create')
-                        <p>Users Create</p>
-                    @endcan
-                    @can('users-edit')
-                        <p>Users Edit</p>
-                    @endcan
-                    @can('users-delete')
-                        <p>Users Delete</p>
-                    @endcan
-                    @can('root user')
-                        <p>Root User</p>
-                    @endcan
+            
                 
             @endrole
 

@@ -89,4 +89,6 @@ Route::get('/contador/{número}/dec', [ContadorController::class, 'decrementar']
 Route::get('/contador/reset', [ContadorController::class, 'reset'])->name('contador.reset');
 Route::get('/contador/{número}/duplicate', [ContadorController::class, 'duplicar'])->name('contador.duplicate');
 Route::resource('assets', AssetController::class)->middleware('auth');
+Route::post('/tickets/{ticket}/assign-area', [TicketController::class, 'assignToArea'])->name('tickets.assignArea');
+
 

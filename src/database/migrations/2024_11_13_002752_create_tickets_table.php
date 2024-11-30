@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('asset_id')->nullable(); // Clave foránea opcional
             $table->timestamps();
-    
+            $table->string('area')->nullable(); // Valores: 'hardware', 'software', null
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('asset_id')->references('id')->on('assets')->onDelete('set null');
 

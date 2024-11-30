@@ -11,18 +11,45 @@ use App\Models\Log;  // Asegúrate de que esté usando tu modelo Log y no Monolo
 class TicketController extends Controller
 {
      // Este método maneja la ruta para mostrar todos los tickets
-     public function index()
+//      public function index()
+// {
+//     // Obtener los tickets con su relación 'creator' y aplicar la paginación
+//     $tickets = Ticket::with([
+//         'creator', 
+//         'logs' => function ($query) {
+//             $query->latest()->take(1); // Obtiene solo el último log
+//         }
+//     ])->latest()->paginate(5);
+//     // Retornar la vista y pasar los tickets paginados
+//     return view('tickets.index', compact('tickets'));
+// }
+
+public function index()
 {
-    // Obtener los tickets con su relación 'creator' y aplicar la paginación
-    $tickets = Ticket::with([
-        'creator', 
-        'logs' => function ($query) {
-            $query->latest()->take(1); // Obtiene solo el último log
+    $user = auth()->user();
+    $tickets = collect(); // Colección por defecto para usuarios sin acceso
+
+    if ($user && $user->roles) {
+        $ticketsQuery = Ticket::with([
+            'creator',
+            'logs' => function ($query) {
+                $query->latest()->take(1);
+            }
+        ]);
+
+        if ($user->hasRole('root') || $user->hasRole('coordinador')) {
+            $tickets = $ticketsQuery->latest()->paginate(5);
+        } elseif ($user->hasRole('hardware')) {
+            $tickets = $ticketsQuery->where('area', 'hardware')->latest()->paginate(5);
+        } elseif ($user->hasRole('software')) {
+            $tickets = $ticketsQuery->where('area', 'software')->latest()->paginate(5);
         }
-    ])->latest()->paginate(5);
-    // Retornar la vista y pasar los tickets paginados
+    }
+
     return view('tickets.index', compact('tickets'));
 }
+
+
 
     public function create()
     {
@@ -85,6 +112,17 @@ public function show($ticketId)
         ]);
 
         return redirect()->route('tickets.index')->with('success', 'Ticket actualizado');
+    }
+
+    public function assignToArea(Request $request, Ticket $ticket) {
+        $validated = $request->validate([
+            'area' => 'required|in:hardware,software',
+        ]);
+
+        $ticket->area = $validated['area'];
+        $ticket->save();
+
+        return redirect()->route('tickets.index')->with('success', 'El ticket ha sido asignado al área: ' . $validated['area']);
     }
 
     public function destroy(Ticket $ticket)

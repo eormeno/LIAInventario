@@ -93,29 +93,43 @@
                 </div>
 
                 {{-- Acciones --}}
-                <div class="bg-gray-100 dark:bg-white px-6 py-4 flex justify-between items-center">
-                    @if($ticket->status != 'Resuelto')
-                        <div class="space-x-3">
-                            <form action="{{ route('tickets.update', $ticket->id) }}" method="POST" class="inline">
-                                @csrf
-                                @method('PUT')
-                                <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">
-                                    Resolver Ticket
-                                </button>
-                            </form>
+<div class="bg-gray-100 dark:bg-white px-6 py-4 flex justify-between items-center">
+    @if($ticket->status != 'Resuelto')
+        <div class="space-x-3">
+            <form action="{{ route('tickets.update', $ticket->id) }}" method="POST" class="inline">
+                @csrf
+                @method('PUT')
+                <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">
+                    Resolver Ticket
+                </button>
+            </form>
 
-                            <a href="{{ route('logs.create',['ticket_id' => $ticket->id]) }}" 
-                               class="inline-block px-4 py-2 bg-[#1a237e] text-white rounded hover:bg-[#3949ab] transition-colors duration-200">
-                                Agregar nuevo Log
-                            </a>
-                        </div>
-                    @endif
+            <a href="{{ route('logs.create',['ticket_id' => $ticket->id]) }}" 
+               class="inline-block px-4 py-2 bg-[#1a237e] text-white rounded hover:bg-[#3949ab] transition-colors duration-200">
+                Agregar nuevo Log
+            </a>
 
-                    <a href="{{ route('tickets.index') }}" 
-                       class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
-                        Volver a la lista de tickets
-                    </a>
-                </div>
+            {{-- Formulario para asignar área --}}
+            <form action="{{ route('tickets.assignArea', $ticket->id) }}" method="POST" class="inline">
+                @csrf
+                <label for="area" class="text-gray-700 dark:text-gray-800 font-medium">Asignar Área:</label>
+                <select name="area" id="area" required class="border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="hardware" {{ $ticket->area == 'hardware' ? 'selected' : '' }}>Hardware</option>
+                    <option value="software" {{ $ticket->area == 'software' ? 'selected' : '' }}>Software</option>
+                </select>
+                <button type="submit" class="bg-[#3949ab] text-white px-4 py-2 rounded-md hover:bg-blue-400 transition">
+                    Asignar
+                </button>
+            </form>
+        </div>
+    @endif
+
+    <a href="{{ route('tickets.index') }}" 
+       class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
+        Volver a la lista de tickets
+    </a>
+</div>
+
             </div>
         </div>
     </div>
