@@ -75,6 +75,9 @@ public function index()
         'created_by' => Auth::id(), // Asignar el ID del usuario autenticado
         'asset_id' => $request->asset_code,
     ]);
+    
+    $imagePath = null;
+
     if ($request->hasFile('imagen')) {
         // Guardar la nueva imagen
         $imagePath = $request->file('imagen')->store('logs_images', 'public');
@@ -137,10 +140,16 @@ public function show($ticketId)
 
     private function createLog($ticket, $comentario)
     {
+        if ($comentario == 'Ticket resuelto'){
+            $estado = 'Resuelto';
+        }else{
+            $estado = 'En progreso';
+        }
+
         Log::create([
             'ticket_id' => $ticket->id,
             'comentario' => $comentario,
-            'estado' => 'Resuelto', // O el estado que corresponda al log
+            'estado' => $estado, // O el estado que corresponda al log
             'user_id' => Auth::id(), // El ID del usuario autenticado
             'imagen' => null, // O la imagen si es necesario
         ]);
@@ -155,7 +164,9 @@ public function show($ticketId)
         $ticket->area = $validated['area'];
         $ticket->save();
 
-        return redirect()->route('tickets.index')->with('success', 'El ticket ha sido asignado al área: ' . $validated['area']);
+        $this->createLog($ticket, 'Ticket derivado al área: ' . $validated['area']);
+
+        return redirect()->route('tickets.show', $ticket->id)->with('success', 'El ticket ha sido asignado al área: ' . $validated['area']);
     }
 
     public function destroy(Ticket $ticket)
