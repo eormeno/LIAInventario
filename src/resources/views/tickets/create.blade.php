@@ -1,23 +1,13 @@
 <!-- resources/views/tickets/create.blade.php -->
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Crear Ticket') }}
-        </h2>
+<x-event-layout>
+    <x-slot name="title">
+        {{ __('Tickets Manager > Create new ticket') }}
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden sm:rounded-lg">
-            {{-- @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif --}}
+
                 <form method="POST" action="{{ route('tickets.store') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="p-6">
@@ -62,7 +52,7 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-event-layout>
 
 
 

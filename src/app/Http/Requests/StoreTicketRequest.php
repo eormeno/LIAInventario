@@ -18,7 +18,6 @@ class StoreTicketRequest extends FormRequest
         return [
             'asset_code' => 'required|exists:assets,id',
             'subject' => 'required|string|max:255',
-            'created_by' => 'required|integer',
             'description' => 'required|string',
         ];
     }
@@ -26,6 +25,7 @@ class StoreTicketRequest extends FormRequest
     public function messages()
     {
         return [
+            'asset_code.required' => 'El código de activo es obligatorio.',
             'asset_code.exists' => 'El código de activo no es válido.',
             'subject.required' => 'El asunto es obligatorio.',
             'description.required' => 'Debes agregar un comentario'
