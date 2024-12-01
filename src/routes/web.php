@@ -23,12 +23,17 @@ Route::middleware('permission:see-panel')->group(function () {
     //     return view('dashboard');
     // })->name('dashboard');
     Route::get('/dashboard', function () {
-        // Obtener todos los tickets
-        $tickets = Ticket::all();
-        
+        // Verificar si el usuario tiene el rol 'root'
+        $isRoot = auth()->user()->hasRole('root'); // Verifica si el usuario tiene el rol root
+        $userArea = auth()->user()->area; // Obtener el área del usuario
+    
+        // Si el usuario es root, obtiene todos los tickets, si no, obtiene solo los tickets de su área
+        $tickets = $isRoot ? Ticket::all() : Ticket::where('area', $userArea)->get();
+    
         // Pasar los tickets a la vista dashboard
         return view('dashboard', compact('tickets'));
     })->name('dashboard');
+    
 
 
     Route::get('/pull-events', [EventController::class, 'pullEvents'])->name('pull-events');

@@ -21,6 +21,7 @@ class TicketSeeder extends Seeder
                 'subject' => $faker->sentence,
                 'created_by' => User::inRandomOrder()->first()->id,
                 'asset_id' => Asset::inRandomOrder()->first()->id,
+                'area' => $faker->randomElement(['Software','Hardware','TI','Administrativa']),
             ]);
 
             Log::create([

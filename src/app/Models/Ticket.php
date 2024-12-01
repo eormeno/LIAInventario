@@ -62,7 +62,7 @@ class Ticket extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['subject', 'created_by', 'asset_id'];
+    protected $fillable = ['subject', 'created_by', 'asset_id', 'area'];
 
     public function logs()
     {

@@ -30,6 +30,7 @@ public function index()
     $user = auth()->user();
     $tickets = collect(); // Colección por defecto para usuarios sin acceso
 
+
     if ($user && $user->roles) {
         $ticketsQuery = Ticket::with([
             'creator',
@@ -40,10 +41,10 @@ public function index()
 
         if ($user->hasRole('root') || $user->hasRole('coordinador')) {
             $tickets = $ticketsQuery->latest()->paginate(5);
-        } elseif ($user->hasRole('hardware')) {
-            $tickets = $ticketsQuery->where('area', 'hardware')->latest()->paginate(5);
-        } elseif ($user->hasRole('software')) {
-            $tickets = $ticketsQuery->where('area', 'software')->latest()->paginate(5);
+        } elseif ($user->area == 'Hardware') {
+            $tickets = $ticketsQuery->where('area', 'Hardware')->latest()->paginate(5);
+        } elseif ($user->area == 'Software') {
+            $tickets = $ticketsQuery->where('area', 'Software')->latest()->paginate(5);
         }
     }
 
@@ -160,7 +161,7 @@ public function show($ticketId)
         $validated = $request->validate([
             'area' => 'required|in:hardware,software',
         ]);
-        //si el ticket se intenta asignar al area a la que ya pertenece, se redirige con mensaje de erorr
+
         if ($ticket->area == $validated['area']) {
             return redirect()->route('tickets.show', $ticket->id)->with('error', 'El ticket ya se encuentra en el área: ' . $validated['area']);
         }

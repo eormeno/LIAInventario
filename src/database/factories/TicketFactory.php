@@ -13,6 +13,7 @@ class TicketFactory extends Factory
         return [
             'subject' => $this->faker->sentence,   // Campo corregido de 'title' a 'subject'
             'created_at' => now(),
+            'area' => $this->faker->randomElement(['Software','Hardware','TI','Administrativa']),
         ];
     }
 }

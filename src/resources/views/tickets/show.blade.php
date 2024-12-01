@@ -6,7 +6,7 @@
                 {{ __('Detalles del Ticket') }} #{{ $ticket->id }}
             </h2>
             <span class=" text-white text-sm px-3 py-1 rounded-full">
-                {{ $ticket->status }}
+                {{ $ticket->logs->first()->estado }}
             </span>
         </div>
     </x-slot>
@@ -96,6 +96,7 @@
 <div class="bg-gray-100 dark:bg-white px-6 py-4 flex justify-between items-center">
     @if($ticket->logs->last()->estado != 'Resuelto')
         <div class="space-x-3">
+            @hasrole('root')
             <form action="{{ route('tickets.resolve', $ticket->id) }}" method="POST" class="inline">
                 @csrf
                 @method('PUT')
@@ -103,6 +104,7 @@
                     Resolver Ticket
                 </button>
             </form>
+            @endhasrole
             
 
             <a href="{{ route('logs.create',['ticket_id' => $ticket->id]) }}" 
@@ -110,6 +112,7 @@
                 Agregar nuevo Log
             </a>
 
+            @hasrole('root')
             {{-- Formulario para asignar área --}}
             <form action="{{ route('tickets.assignArea', $ticket->id) }}" method="POST" class="inline">
                 @csrf
@@ -122,6 +125,7 @@
                     Asignar
                 </button>
             </form>
+            @endhasrole
         </div>
     @else
         <form action="{{ route('tickets.reopen', $ticket->id) }}" method="POST" class="inline">
