@@ -63,20 +63,28 @@ public function index()
         'subject' => 'required|string|max:255',
         'description' => 'required|string',
         'status' => 'required|string',
+        'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'asset_code' => 'required|string',
     ]);
 
     // Crear el ticket
     $ticket = Ticket::create([
         'subject' => $request->subject,
         'created_by' => Auth::id(), // Asignar el ID del usuario autenticado
+        'asset_id' => $request->asset_code,
     ]);
-
+    if ($request->hasFile('imagen')) {
+        // Guardar la nueva imagen
+        $imagePath = $request->file('imagen')->store('logs_images', 'public');
+    }
     $log = Log::create([
         'ticket_id'=> $ticket->id,
         'comentario' => $request->description,
         'estado' => $request->status,
         'user_id' => Auth::id(), // Asignar el ID del usuario autenticado
+        'imagen' => $imagePath,
     ]);
+
 
     return redirect()->route('tickets.index')->with('success', 'Ticket creado exitosamente.');
 }

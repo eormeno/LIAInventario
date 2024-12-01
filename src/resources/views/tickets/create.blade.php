@@ -9,18 +9,22 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden sm:rounded-lg">
-                <form method="POST" action="{{ route('tickets.store') }}">
+            @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+                <form method="POST" action="{{ route('tickets.store') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="p-6">
                         <div class="mb-4">
                         <label class="block text-gray-700 mb-2">Código de Activo</label>
-                        <input 
-                                    type="text" 
-                                    id="assetCode" 
-                                    name="asset_code" 
-                                    placeholder="Ingresar código" 
-                                    class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
+                        <input type="text" id="assetCode" name="asset_code" placeholder="Ingresar código" class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div class="mb-4">
                             <label for="subject" class="block text-gray-700">Asunto</label>
