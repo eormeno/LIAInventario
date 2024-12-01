@@ -94,15 +94,16 @@
 
                 {{-- Acciones --}}
 <div class="bg-gray-100 dark:bg-white px-6 py-4 flex justify-between items-center">
-    @if($ticket->status != 'Resuelto')
+    @if($ticket->logs->last()->estado != 'Resuelto')
         <div class="space-x-3">
-            <form action="{{ route('tickets.update', $ticket->id) }}" method="POST" class="inline">
+            <form action="{{ route('tickets.resolve', $ticket->id) }}" method="POST" class="inline">
                 @csrf
                 @method('PUT')
                 <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">
                     Resolver Ticket
                 </button>
             </form>
+            
 
             <a href="{{ route('logs.create',['ticket_id' => $ticket->id]) }}" 
                class="inline-block px-4 py-2 bg-[#1a237e] text-white rounded hover:bg-[#3949ab] transition-colors duration-200">

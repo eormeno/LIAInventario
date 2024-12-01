@@ -122,6 +122,29 @@ public function show($ticketId)
         return redirect()->route('tickets.index')->with('success', 'Ticket actualizado');
     }
 
+    public function resolveTicket($ticketId)
+    {
+        $ticket = Ticket::findOrFail($ticketId);
+
+
+        // Crea un log para esta acción
+        $this->createLog($ticket, 'Ticket resuelto');
+
+        return redirect()->route('tickets.index', $ticketId)->with('success', 'Ticket resuelto correctamente');
+    }
+
+    private function createLog($ticket, $comentario)
+    {
+        Log::create([
+            'ticket_id' => $ticket->id,
+            'comentario' => $comentario,
+            'estado' => 'Resuelto', // O el estado que corresponda al log
+            'user_id' => Auth::id(), // El ID del usuario autenticado
+            'imagen' => null, // O la imagen si es necesario
+        ]);
+    }
+
+
     public function assignToArea(Request $request, Ticket $ticket) {
         $validated = $request->validate([
             'area' => 'required|in:hardware,software',

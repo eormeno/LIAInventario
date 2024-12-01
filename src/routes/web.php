@@ -37,6 +37,8 @@ Route::middleware('permission:see-panel')->group(function () {
     Route::resource('places', PlaceController::class);
     Route::resource('logs', LogController::class);
     Route::resource('tickets', TicketController::class);
+    Route::put('/tickets/{ticket}/resolve', [TicketController::class, 'resolveTicket'])->name('tickets.resolve');
+
 });
 
 // Rutas de la aplicación
