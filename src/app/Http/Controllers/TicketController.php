@@ -160,7 +160,10 @@ public function show($ticketId)
         $validated = $request->validate([
             'area' => 'required|in:hardware,software',
         ]);
-
+        //si el ticket se intenta asignar al area a la que ya pertenece, se redirige con mensaje de erorr
+        if ($ticket->area == $validated['area']) {
+            return redirect()->route('tickets.show', $ticket->id)->with('error', 'El ticket ya se encuentra en el área: ' . $validated['area']);
+        }
         $ticket->area = $validated['area'];
         $ticket->save();
 
@@ -174,6 +177,11 @@ public function show($ticketId)
         $ticket->delete();
 
         return redirect()->route('tickets.index')->with('success', 'Ticket eliminado');
+    }
+
+    public function reopen(Ticket $ticket){
+        $this->createLog($ticket, 'Ticket reabierto');
+        return redirect()->route('tickets.show', $ticket->id)->with('success', 'Ticket reabierto');
     }
 }
 

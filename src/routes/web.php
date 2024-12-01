@@ -38,6 +38,7 @@ Route::middleware('permission:see-panel')->group(function () {
     Route::resource('logs', LogController::class);
     Route::resource('tickets', TicketController::class);
     Route::put('/tickets/{ticket}/resolve', [TicketController::class, 'resolveTicket'])->name('tickets.resolve');
+    Route::post('/tickets/{ticket}/reopen', [TicketController::class, 'reopen'])->name('tickets.reopen');
 
 });
 

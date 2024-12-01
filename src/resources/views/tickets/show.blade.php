@@ -1,6 +1,6 @@
 <!-- resources/views/tickets/show.blade.php -->
-<x-app-layout>
-    <x-slot name="header">
+<x-event-layout>
+    <x-slot name="title">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Detalles del Ticket') }} #{{ $ticket->id }}
@@ -123,6 +123,13 @@
                 </button>
             </form>
         </div>
+    @else
+        <form action="{{ route('tickets.reopen', $ticket->id) }}" method="POST" class="inline">
+            @csrf
+            <button type="submit" class="bg-[#3949ab] text-white px-4 py-2 rounded-md hover:bg-blue-400 transition">
+                    Reabrir Ticket
+            </button>
+        </form>
     @endif
 
     <a href="{{ route('tickets.index') }}" 
@@ -134,4 +141,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-event-layout>

@@ -52,8 +52,8 @@
                                                 class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                                 {{ $ticket->logs->first()->estado == 'Creado' ? 'bg-yellow-100 text-yellow-800' : '' }} 
                                                 {{ $ticket->logs->first()->estado == 'En Progreso' ? 'bg-green-100 text-green-800' : '' }} 
-                                                {{ $ticket->logs->first()->estado == 'Cerrado' ? 'bg-red-100 text-red-800' : '' }} 
-                                                {{ !in_array($ticket->logs->first()->estado, ['Creado', 'En Progreso', 'Cerrado']) ? 'bg-gray-100 text-gray-800' : '' }}">
+                                                {{ $ticket->logs->first()->estado == 'Resuelto' ? 'bg-red-100 text-red-800' : '' }} 
+                                                {{ !in_array($ticket->logs->first()->estado, ['Creado', 'En Progreso', 'Resuelto']) ? 'bg-gray-100 text-gray-800' : '' }}">
                                                 {{ $ticket->logs->first()->estado }}
                                             </span>
                                     @else
