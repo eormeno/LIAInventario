@@ -9,7 +9,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden sm:rounded-lg">
-            @if ($errors->any())
+            {{-- @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
             @foreach ($errors->all() as $error)
@@ -17,8 +17,7 @@
             @endforeach
         </ul>
     </div>
-@endif
-
+@endif --}}
                 <form method="POST" action="{{ route('tickets.store') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="p-6">
@@ -28,12 +27,12 @@
                         </div>
                         <div class="mb-4">
                             <label for="subject" class="block text-gray-700">Asunto</label>
-                            <input type="text" id="subject" name="subject" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            <input type="text" id="subject" name="subject" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
 
                         <div class="mb-4">
                             <label for="description" class="block text-gray-700">Comentario</label>
-                            <textarea id="description" name="description" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                            <textarea id="description" name="description" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" ></textarea>
                         </div>
 
                          <div>

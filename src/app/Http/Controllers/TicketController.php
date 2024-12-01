@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTicketRequest;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,7 +57,7 @@ public function index()
         return view('tickets.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreTicketRequest $request)
 {
     // Validar los datos del formulario
     $request->validate([
@@ -65,6 +66,7 @@ public function index()
         'status' => 'required|string',
         'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         'asset_code' => 'required|string',
+
     ]);
 
     // Crear el ticket

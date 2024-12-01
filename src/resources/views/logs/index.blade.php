@@ -32,7 +32,7 @@
                                     @if (Str::startsWith($log->imagen, 'data:image'))
                                         <img src="{{ $log->imagen }}" alt="Imagen Base64" class="w-10 h-10 object-cover rounded shadow-sm">
                                     @else
-                                        <img src="{{ asset('storage/' . $log->imagen) }}" alt="Imagen subida" class="w-32 h-32 object-cover rounded shadow-sm">
+                                        <img src="{{ asset('storage/' . $log->imagen) }}" alt="Imagen subida" class="w-10 h-10 object-cover rounded shadow-sm">
                                     @endif
                                 @else
                                     <span class="text-[#212121]">Sin imagen</span>
