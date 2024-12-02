@@ -12,16 +12,21 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    @hasanyrole('root|registered|hardware|software|ti')
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Inicio') }}
                     </x-nav-link>
+                    @endhasanyrole
+
 
                     @hasrole('root')
+                    
                     <x-nav-link href="{{ route('roles.index') }}" :active="request()->routeIs('roles.index')">
                         {{ __('Roles') }}
                     </x-nav-link>
+                    @endhasrole
                     
-
+                    @hasanyrole('root|users-admin')
                     <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
                         {{ __('Usuarios') }}
                     </x-nav-link>
@@ -34,8 +39,10 @@
                     <x-nav-link href="{{ route('places.index') }}" :active="request()->routeIs('places.index')">
                         {{ __('Lugares') }}
                     </x-nav-link>
-                    @endhasrole
+                    @endhasanyrole
 
+                     
+                    @hasanyrole('root|registered|hardware|software|ti')
                     <x-nav-link href="{{ route('logs.index') }}" :active="request()->routeIs('logs.index')">
                         {{ __('Logs') }}
                     </x-nav-link>
@@ -43,6 +50,7 @@
                     <x-nav-link href="{{ route('tickets.index') }}" :active="request()->routeIs('tickets.index')">
                         {{ __('Tickets') }}
                     </x-nav-link>
+                    @endhasanyrole
 
                 </div>
             </div>
@@ -182,11 +190,11 @@
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Inicio') }}
             </x-responsive-nav-link>
-            @hasrole('root')
+            @hasanyrole('root|users-admin')
             <x-responsive-nav-link href="{{ route('roles.index') }}" :active="request()->routeIs('roles.index')">
                 {{ __('Roles') }}
             </x-responsive-nav-link>
-
+            
             <x-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
                 {{ __('Usuarios') }}
             </x-responsive-nav-link>
@@ -199,7 +207,7 @@
             <x-responsive-nav-link href="{{ route('places.index') }}" :active="request()->routeIs('places.index')">
                 {{ __('Lugares') }}
             </x-responsive-nav-link>
-            @endhasrole
+            @endhasanyrole
             <x-responsive-nav-link href="{{ route('logs.index') }}" :active="request()->routeIs('logs.index')">
                 {{ __('Logs') }}
             </x-responsive-nav-link>
