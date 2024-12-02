@@ -1,7 +1,7 @@
 <!-- resources/views/tickets/create.blade.php -->
 <x-event-layout>
     <x-slot name="title">
-        {{ __('Tickets Manager > Create new ticket') }}
+        {{ __('Tickets > Crear nuevo ticket') }}
     </x-slot>
 
     <div class="py-12">
