@@ -12,7 +12,7 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    @hasanyrole('root|registered|hardware|software|ti')
+                    @hasanyrole('root|hardware|software|ti')
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Inicio') }}
                     </x-nav-link>
@@ -42,7 +42,7 @@
                     @endhasanyrole
 
                      
-                    @hasanyrole('root|registered|hardware|software|ti')
+                    @hasanyrole('root|hardware|software|ti')
                     <x-nav-link href="{{ route('logs.index') }}" :active="request()->routeIs('logs.index')">
                         {{ __('Logs') }}
                     </x-nav-link>
@@ -187,14 +187,18 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
+        @hasanyrole('root|hardware|software|ti')
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Inicio') }}
             </x-responsive-nav-link>
-            @hasanyrole('root|users-admin')
+        @endhasanyrole
+            @hasrole('root')
             <x-responsive-nav-link href="{{ route('roles.index') }}" :active="request()->routeIs('roles.index')">
                 {{ __('Roles') }}
             </x-responsive-nav-link>
-            
+            @endhasrole
+            @hasanyrole('root|users-admin')
+
             <x-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
                 {{ __('Usuarios') }}
             </x-responsive-nav-link>
@@ -208,6 +212,7 @@
                 {{ __('Lugares') }}
             </x-responsive-nav-link>
             @endhasanyrole
+            @hasanyrole('root|hardware|software|ti')
             <x-responsive-nav-link href="{{ route('logs.index') }}" :active="request()->routeIs('logs.index')">
                 {{ __('Logs') }}
             </x-responsive-nav-link>
@@ -215,7 +220,7 @@
             <x-responsive-nav-link href="{{ route('tickets.index') }}" :active="request()->routeIs('tickets.index')">
                 {{ __('Tickets') }}
             </x-responsive-nav-link>
-
+            @endhasanyrole
         </div>
         
 

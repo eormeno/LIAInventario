@@ -86,7 +86,25 @@
                         Ver todos los tickets
                     </a>
                 </div>
-                
+
+                @php
+                    $user = auth()->user();
+
+                    $ticketsQuery = \App\Models\Ticket::with(['creator', 'logs' => function ($query) {
+                        $query->latest()->take(1);
+                    }]);
+
+                    if ($user->hasRole('root') || $user->hasRole('coordinador')) {
+                        $tickets = $ticketsQuery->latest()->take(5)->get();
+                    } elseif (strtolower($user->area) === 'hardware') {
+                        $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', ['hardware'])->latest()->take(5)->get();
+                    } elseif (strtolower($user->area) === 'software') {
+                        $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', ['software'])->latest()->take(5)->get();
+                    } else {
+                        $tickets = collect(); // Colección vacía
+                    }
+                @endphp
+
                 @if($tickets->count() > 0)
                     <table class="w-full">
                         <thead>
@@ -99,7 +117,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
-                            @foreach ($tickets->take(5) as $ticket)
+                            @foreach ($tickets as $ticket)
                                 <tr class="hover:bg-gray-50 transition duration-150">
                                     <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                                         #{{ $ticket->id }}
@@ -139,6 +157,7 @@
         </div>
     </div>
 </x-app-layout>
+
 
 
 
