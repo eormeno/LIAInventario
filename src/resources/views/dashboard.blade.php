@@ -61,102 +61,99 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            @php
+                $user = auth()->user();
+                $canViewTickets = $user->hasRole('root') || $user->hasRole('coordinador') || in_array(strtolower($user->area), ['hardware', 'software']);
+            @endphp
+
             {{-- Mensaje según rol --}}
-            @if(auth()->user()->hasRole('registered'))
+            @if(auth()->user()->hasRole('registered') || !$canViewTickets)
                 <div class="bg-gray-200 text-gray-500 shadow-md rounded-lg p-6">
                     <div class="text-xl">
                         <span class="font-bold">Usted está registrado en el sistema.</span><br>
                         Para poder acceder a funcionalidades específicas, debe dirigirse personalmente al área de administración de la organización.
                     </div>
                 </div>
-            @elseif(auth()->user()->hasRole('root'))
-                <div class="bg-gray-200 text-gray-500 shadow-md rounded-lg p-6">
-                    <div class="text-xl">
-                        <span class="font-bold">Usted es usuario raíz.</span><br>
-                        Puede acceder a todas las funcionalidades del sistema.
+            @else
+                {{-- Tickets recientes --}}
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <div class="px-6 py-4 bg-[#3949ab] border-b flex justify-between items-center">
+                        <h2 class="text-lg font-semibold text-white">Tickets Recientes</h2>
+                        <a href="{{ route('tickets.index') }}" class="text-blue-100 hover:text-blue-200 text-sm">
+                            Ver todos los tickets
+                        </a>
                     </div>
+
+                    @php
+                        $ticketsQuery = \App\Models\Ticket::with(['creator', 'logs' => function ($query) {
+                            $query->latest()->take(1);
+                        }]);
+
+                        if ($user->hasRole('root') || $user->hasRole('coordinador')) {
+                            $tickets = $ticketsQuery->latest()->take(5)->get();
+                        } elseif (strtolower($user->area) === 'hardware') {
+                            $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', ['hardware'])->latest()->take(5)->get();
+                        } elseif (strtolower($user->area) === 'software') {
+                            $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', ['software'])->latest()->take(5)->get();
+                        } else {
+                            $tickets = collect(); // Colección vacía
+                        }
+                    @endphp
+
+                    @if($tickets->count() > 0)
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
+                                    <th class="px-4 py-3 text-left">N° Ticket</th>
+                                    <th class="px-4 py-3 text-left">Asunto</th>
+                                    <th class="px-4 py-3 text-left">Estado</th>
+                                    <th class="px-4 py-3 text-left">Fecha</th>
+                                    <th class="px-4 py-3 text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                @foreach ($tickets as $ticket)
+                                    <tr class="hover:bg-gray-50 transition duration-150">
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            #{{ $ticket->id }}
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $ticket->subject }}
+                                        </td>
+                                        <td class="px-4 py-4">
+                                            <span 
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                {{ $ticket->logs->first()->estado == 'Creado' ? 'bg-yellow-100 text-yellow-800' : '' }} 
+                                                {{ $ticket->logs->first()->estado == 'En Progreso' ? 'bg-green-100 text-green-800' : '' }} 
+                                                {{ $ticket->logs->first()->estado == 'Cerrado' ? 'bg-red-100 text-red-800' : '' }} 
+                                                {{ !in_array($ticket->logs->first()->estado, ['Creado', 'En Progreso', 'Cerrado']) ? 'bg-gray-100 text-gray-800' : '' }} ">
+                                                {{ $ticket->logs->first()->estado }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-4 text-sm text-gray-500">
+                                            {{ $ticket->created_at->format('Y-m-d') }}
+                                        </td>
+                                        <td class="px-4 py-4 text-right">
+                                            <a href="{{ route('tickets.show', $ticket->id) }}" 
+                                               class="text-blue-600 hover:text-blue-900 text-sm">
+                                                Ver
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @else
+                        <div class="text-center py-6 text-gray-500">
+                            No hay tickets recientes
+                        </div>
+                    @endif
                 </div>
             @endif
-
-            {{-- Tickets recientes --}}
-            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <div class="px-6 py-4 bg-[#3949ab] border-b flex justify-between items-center">
-                    <h2 class="text-lg font-semibold text-white">Tickets Recientes</h2>
-                    <a href="{{ route('tickets.index') }}" class="text-blue-100 hover:text-blue-200 text-sm">
-                        Ver todos los tickets
-                    </a>
-                </div>
-
-                @php
-                    $user = auth()->user();
-
-                    $ticketsQuery = \App\Models\Ticket::with(['creator', 'logs' => function ($query) {
-                        $query->latest()->take(1);
-                    }]);
-
-                    if ($user->hasRole('root') || $user->hasRole('coordinador')) {
-                        $tickets = $ticketsQuery->latest()->take(5)->get();
-                    } elseif (strtolower($user->area) === 'hardware') {
-                        $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', ['hardware'])->latest()->take(5)->get();
-                    } elseif (strtolower($user->area) === 'software') {
-                        $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', ['software'])->latest()->take(5)->get();
-                    } else {
-                        $tickets = collect(); // Colección vacía
-                    }
-                @endphp
-
-                @if($tickets->count() > 0)
-                    <table class="w-full">
-                        <thead>
-                            <tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
-                                <th class="px-4 py-3 text-left">N° Ticket</th>
-                                <th class="px-4 py-3 text-left">Asunto</th>
-                                <th class="px-4 py-3 text-left">Estado</th>
-                                <th class="px-4 py-3 text-left">Fecha</th>
-                                <th class="px-4 py-3 text-right">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            @foreach ($tickets as $ticket)
-                                <tr class="hover:bg-gray-50 transition duration-150">
-                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        #{{ $ticket->id }}
-                                    </td>
-                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $ticket->subject }}
-                                    </td>
-                                    <td class="px-4 py-4">
-                                        <span 
-                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            {{ $ticket->logs->first()->estado == 'Creado' ? 'bg-yellow-100 text-yellow-800' : '' }} 
-                                            {{ $ticket->logs->first()->estado == 'En Progreso' ? 'bg-green-100 text-green-800' : '' }} 
-                                            {{ $ticket->logs->first()->estado == 'Cerrado' ? 'bg-red-100 text-red-800' : '' }} 
-                                            {{ !in_array($ticket->logs->first()->estado, ['Creado', 'En Progreso', 'Cerrado']) ? 'bg-gray-100 text-gray-800' : '' }} ">
-                                            {{ $ticket->logs->first()->estado }}
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-4 text-sm text-gray-500">
-                                        {{ $ticket->created_at->format('Y-m-d') }}
-                                    </td>
-                                    <td class="px-4 py-4 text-right">
-                                        <a href="{{ route('tickets.show', $ticket->id) }}" 
-                                           class="text-blue-600 hover:text-blue-900 text-sm">
-                                            Ver
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @else
-                    <div class="text-center py-6 text-gray-500">
-                        No hay tickets recientes
-                    </div>
-                @endif
-            </div>
         </div>
     </div>
 </x-app-layout>
+
 
 
 
