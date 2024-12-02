@@ -67,7 +67,7 @@
             @endphp
 
             {{-- Mensaje según rol --}}
-            @if(auth()->user()->hasRole('registered') || !$canViewTickets)
+            @if(auth()->user()->hasRole('registered') && !$canViewTickets)
                 <div class="bg-gray-200 text-gray-500 shadow-md rounded-lg p-6">
                     <div class="text-xl">
                         <span class="font-bold">Usted está registrado en el sistema.</span><br>
