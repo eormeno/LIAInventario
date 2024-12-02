@@ -17,10 +17,19 @@ class LogController extends Controller
     /**
      * Display a listing of the resource.
      */    
-    public function index(): View {
-        $logs = Log::latest()->paginate(5);
-        return view('logs.index', compact('logs'));
-    }
+    public function index()
+{
+    $user = auth()->user(); // Usuario autenticado
+    $area = $user->area; // Suponiendo que el usuario tiene un campo `area_id`
+
+    // Obtener los logs solo de los tickets correspondientes al área del usuario
+    $logs = Log::whereHas('ticket', function ($query) use ($area) {
+        $query->where('area', $area); // Suponiendo que los tickets tienen `area_id`
+    })->paginate(10);
+
+    return view('logs.index', compact('logs'));
+}
+
 
     public function create(Request $request)
 {

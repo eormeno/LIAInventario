@@ -27,29 +27,34 @@ class TicketController extends Controller
 
 public function index()
 {
-    $user = auth()->user();
-    $tickets = collect(); // Colección por defecto para usuarios sin acceso
+    $user = auth()->user(); // Usuario autenticado
 
-
-    if ($user && $user->roles) {
-        $ticketsQuery = Ticket::with([
-            'creator',
-            'logs' => function ($query) {
-                $query->latest()->take(1);
-            }
-        ]);
-
-        if ($user->hasRole('root') || $user->hasRole('coordinador')) {
-            $tickets = $ticketsQuery->latest()->paginate(5);
-        } elseif ($user->area == 'Hardware') {
-            $tickets = $ticketsQuery->where('area', 'Hardware')->latest()->paginate(5);
-        } elseif ($user->area == 'Software') {
-            $tickets = $ticketsQuery->where('area', 'Software')->latest()->paginate(5);
+    // Consulta base con relaciones y último log
+    $ticketsQuery = Ticket::with([
+        'creator',
+        'logs' => function ($query) {
+            $query->latest()->take(1); // Solo el último log
         }
+    ]);
+
+    // Filtrar según rol y área
+    if ($user->hasRole('root') || $user->hasRole('coordinador')) {
+        // Root y coordinadores ven todos los tickets
+        $tickets = $ticketsQuery->latest()->paginate(5);
+    } elseif ($user->area === 'Hardware') {
+        // Usuarios del área de Hardware
+        $tickets = $ticketsQuery->where('area', 'Hardware')->latest()->paginate(5);
+    } elseif ($user->area === 'Software') {
+        // Usuarios del área de Software
+        $tickets = $ticketsQuery->where('area', 'Software')->latest()->paginate(5);
+    } else {
+        // Usuarios sin acceso o con área no definida
+        $tickets = collect(); // Retorna una colección vacía
     }
 
     return view('tickets.index', compact('tickets'));
 }
+
 
 
 

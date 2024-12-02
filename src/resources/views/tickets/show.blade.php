@@ -5,9 +5,9 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Detalles del Ticket') }} #{{ $ticket->id }}
             </h2>
-            <span class=" text-white text-sm px-3 py-1 rounded-full">
+            {{-- <span class=" text-white text-sm px-3 py-1 rounded-full">
                 {{ $ticket->logs->first()->estado }}
-            </span>
+            </span> --}}
         </div>
     </x-slot>
 
