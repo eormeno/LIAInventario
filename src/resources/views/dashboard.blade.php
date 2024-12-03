@@ -64,11 +64,11 @@
             @php
                 $user = auth()->user();
                 $canViewTickets = $user->hasRole('root')|| $user->coordinador || in_array(strtolower($user->area), ['hardware', 'software']);
-               
+                
             @endphp
 
             {{-- Mensaje según rol --}}
-            @if(auth()->user()->hasRole('registered')||('users-admin') && !$canViewTickets)
+            @if(auth()->user()->hasRole('registered') && !$canViewTickets)
                 <div class="bg-gray-200 text-gray-500 shadow-md rounded-lg p-6">
                     <div class="text-xl">
                         <span class="font-bold">Usted está registrado en el sistema.</span><br>
@@ -83,10 +83,16 @@
                         <b>Usted es usuario raíz.</b><br> Puede acceder a todas las funcionalidades del sistema.
                     </div>
             @endrole
+
+            <div class="m-4 text-xl text-gray-600 dark:text-gray-900">
+                        <b>Usted pertenece al área {{$user->area}} @if ($user->coordinador)<b>- Coordinador</b>@endif</b>
+                    </div>
+            
+
             </div>
             
             
-            @if(auth()->user()->hasRole('registered,root') && $canViewTickets)
+            @if(auth()->user()->hasRole('registered')||auth()->user()->hasRole('root') && $canViewTickets)
                 {{-- Tickets recientes --}}
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
                     <div class="px-6 py-4 bg-[#3949ab] border-b flex justify-between items-center">
