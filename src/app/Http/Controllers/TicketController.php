@@ -48,7 +48,11 @@ if ($user->hasRole('root') || $user->coordinador) {
 } elseif (strtolower($user->area) === 'software') {
     // Usuarios del área de Software
     $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', ['software'])->latest()->paginate(5);
-} else {
+}elseif (strtolower($user->area) === 'ti') {
+    // Usuarios del área de Software
+    $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', ['ti'])->latest()->paginate(5);
+}
+else {
     // Usuarios sin acceso o con área no definida
     $tickets = collect(); // Retorna una colección vacía
 }
@@ -168,7 +172,7 @@ public function show($ticketId)
 
     public function assignToArea(Request $request, Ticket $ticket) {
         $validated = $request->validate([
-            'area' => 'required|in:hardware,software',
+            'area' => 'required|in:hardware,software,ti',
         ]);
 
         if ($ticket->area == $validated['area']) {

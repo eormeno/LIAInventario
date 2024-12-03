@@ -120,6 +120,7 @@
                 <select name="area" id="area" required class="border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                     <option value="hardware" {{ $ticket->area == 'hardware' ? 'selected' : '' }}>Hardware</option>
                     <option value="software" {{ $ticket->area == 'software' ? 'selected' : '' }}>Software</option>
+                    <option value="ti" {{ $ticket->area == 'ti' ? 'selected' : '' }}>TI</option>
                 </select>
                 <button type="submit" class="bg-[#3949ab] text-white px-4 py-2 rounded-md hover:bg-blue-400 transition">
                     Asignar
