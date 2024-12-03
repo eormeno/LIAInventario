@@ -134,14 +134,6 @@ class PermissionsSeeder extends Seeder
         $users_admin->givePermissionTo(self::USERS_DISABLE);
         $users_admin->givePermissionTo(self::USERS_ENABLE);
 
-        // Agregar roles coordinador, hardware, y software
-        $coordinador = Role::create(['name' => 'coordinador']);
-        $coordinador->givePermissionTo(self::SEE_PANEL);
-
-        $hardware = Role::create(['name' => 'hardware']);
-        $hardware->givePermissionTo(self::SEE_PANEL);
-
-        $software = Role::create(['name' => 'software']);
-        $software->givePermissionTo(self::SEE_PANEL);
+        
     }
 }
