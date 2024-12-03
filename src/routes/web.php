@@ -10,7 +10,7 @@ use App\Http\Controllers\EventController;
 
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\TicketController;
-use App\Http\Controllers\ContadorController;
+
 
 
 

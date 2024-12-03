@@ -20,15 +20,28 @@ class LogController extends Controller
     public function index()
 {
     $user = auth()->user(); // Usuario autenticado
-    $area = $user->area; // Suponiendo que el usuario tiene un campo `area_id`
+    $area = strtolower($user->area); // Aseguramos que el área sea minúscula para evitar errores de comparación
 
-    // Obtener los logs solo de los tickets correspondientes al área del usuario
-    $logs = Log::whereHas('ticket', function ($query) use ($area) {
-        $query->where('area', $area); // Suponiendo que los tickets tienen `area_id`
-    })->paginate(10);
+    // Base de la consulta para los logs
+    $logsQuery = Log::with('ticket');
+
+    // Filtrar por rol y área
+    if ($user->hasRole('root') || $user->hasRole('coordinador')) {
+        // Root y coordinadores ven todos los logs
+        $logs = $logsQuery->latest()->paginate(10);
+    } elseif (in_array($area, ['hardware', 'software'])) {
+        // Filtrar logs según el área
+        $logs = $logsQuery->whereHas('ticket', function ($query) use ($area) {
+            $query->whereRaw('LOWER(area) = ?', [$area]); // Suponiendo que los tickets tienen un campo `area`
+        })->latest()->paginate(10);
+    } else {
+        // Sin acceso
+        $logs = collect(); // Retorna una colección vacía
+    }
 
     return view('logs.index', compact('logs'));
 }
+
 
 
     public function create(Request $request)
