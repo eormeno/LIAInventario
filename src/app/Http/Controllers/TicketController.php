@@ -38,7 +38,7 @@ public function index()
     ]);
 
    // Filtrar según rol y área
-if ($user->hasRole('root') || $user->hasRole('coordinador')) {
+if ($user->hasRole('root') || $user->coordinador) {
     // Root y coordinadores ven todos los tickets
     $tickets = $ticketsQuery->latest()->paginate(5);
 } elseif (strtolower($user->area) === 'hardware') {
