@@ -78,15 +78,17 @@
             @else
 
             <div class="bg-gray-200 text-gray-500 shadow-md rounded-lg p-6">
-            @role('root')
+            
+            @if(auth()->user()->hasRole('root'))
                     <div class="m-4 text-xl text-gray-600 dark:text-gray-900">
                         <b>Usted es usuario raíz.</b><br> Puede acceder a todas las funcionalidades del sistema.
                     </div>
-            @endrole
-
-            <div class="m-4 text-xl text-gray-600 dark:text-gray-900">
-                        <b>Usted pertenece al área {{$user->area}} @if ($user->coordinador)<b>- Coordinador</b>@endif</b>
+            @else
+                    <div class="m-4 text-xl text-gray-600 dark:text-gray-900">
+                                <b>Usted pertenece al área {{$user->area}} @if ($user->coordinador)<b>- Coordinador</b>@endif</b>
                     </div>
+            @endif
+
             
 
             </div>
