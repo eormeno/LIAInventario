@@ -49,8 +49,8 @@ class UserController extends Controller {
         $user->assignRole($validated['roles']);
 
         // Redirigir con mensaje de éxito
-        return redirect()->route('users.index')
-            ->with('success', 'Usuario creado con éxito');
+        $this->infoToast('Usuario creado exitosamente');
+        return redirect()->route('users.index');
     }
 
     public function show($id) {

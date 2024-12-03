@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreTicketRequest;
 use App\Models\Ticket;
+use App\Traits\ToastTrigger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\StoreTicketRequest;
 use App\Models\Log;  // Asegúrate de que esté usando tu modelo Log y no Monolog
 
 
 class TicketController extends Controller
-{
+{   use ToastTrigger;
      // Este método maneja la ruta para mostrar todos los tickets
 //      public function index()
 // {
@@ -98,7 +99,9 @@ if ($user->hasRole('root') || $user->coordinador) {
     ]);
 
 
-    return redirect()->route('tickets.index')->with('success', 'Ticket creado exitosamente.');
+    $this->infoToast('Ticket creado exitosamente');
+        return redirect()->route('tickets.index');
+    // return redirect()->route('tickets.index')->with('success', 'Ticket creado exitosamente.');
 }
 
 
