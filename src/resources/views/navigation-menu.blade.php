@@ -12,7 +12,7 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    @hasanyrole('registered')
+                    @hasanyrole('root|registered')
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Inicio') }}
                     </x-nav-link>
@@ -48,10 +48,12 @@
                         {{ __('Logs') }}
                     </x-nav-link>
                     @endhasrole
-                    @hasanyrole('registered')
-                    <x-nav-link href="{{ route('tickets.index') }}" :active="request()->routeIs('tickets.index')">
-                        {{ __('Tickets') }}
-                    </x-nav-link>
+                    @hasanyrole('registered|root|users-admin')
+                        @if(auth()->user()->area)
+                        <x-nav-link href="{{ route('tickets.index') }}" :active="request()->routeIs('tickets.index')">
+                            {{ __('Tickets') }}
+                        </x-nav-link>
+                        @endif
                     @endhasanyrole
 
                 </div>
