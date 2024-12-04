@@ -63,7 +63,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             @php
                 $user = auth()->user();
-                $canViewTickets = $user->hasRole('root')|| $user->coordinador || in_array(strtolower($user->area), ['hardware', 'software']);
+                $canViewTickets = $user->hasRole('root')|| $user->coordinador || in_array(strtolower($user->area), ['hardware', 'software','ti']);
                 
             @endphp
 
@@ -109,12 +109,12 @@
                             $query->latest()->take(1);
                         }]);
 
+                        $area = strtolower($user->area); // Calcular una vez
+
                         if ($user->hasRole('root') || $user->hasRole('coordinador')) {
                             $tickets = $ticketsQuery->latest()->take(5)->get();
-                        } elseif (strtolower($user->area) === 'hardware') {
-                            $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', ['hardware'])->latest()->take(5)->get();
-                        } elseif (strtolower($user->area) === 'software') {
-                            $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', ['software'])->latest()->take(5)->get();
+                        } elseif (in_array($area, ['hardware', 'software', 'ti'])) {
+                            $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', [$area])->latest()->take(5)->get();
                         } else {
                             $tickets = collect(); // Colección vacía
                         }
