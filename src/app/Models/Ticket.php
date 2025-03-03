@@ -6,6 +6,27 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+class Ticket extends Model
+{
+    use HasFactory;
+
+    protected $fillable = ['subject', 'created_by', 'asset_id', 'area'];
+
+    public function logs()
+    {
+        return $this->hasMany(Log::class);
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function asset()
+    {
+        return $this->belongsTo(Asset::class);
+    }
+}
 // class Ticket extends Model
 // {
 //     use HasFactory;
@@ -58,27 +79,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 //     }
 // }
 
-class Ticket extends Model
-{
-    use HasFactory;
-
-    protected $fillable = ['subject', 'created_by', 'asset_id', 'area'];
-
-    public function logs()
-    {
-        return $this->hasMany(Log::class);
-    }
-
-    public function creator()
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function asset()
-    {
-        return $this->belongsTo(Asset::class);
-    }
-}
 
 
 

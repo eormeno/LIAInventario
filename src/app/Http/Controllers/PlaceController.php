@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Place;
-use App\Http\Requests\StorePlaceRequest;
-use App\Http\Requests\UpdatePlaceRequest;
+use App\Http\Requests\PlaceRequest;
 use App\Traits\DebugHelper;
+use App\Traits\ToastTrigger;
 
 class PlaceController extends Controller
 {
-    use DebugHelper;
+    use DebugHelper, ToastTrigger;
 
     public function index()
     {
@@ -22,10 +22,14 @@ class PlaceController extends Controller
         return view('places.create');
     }
 
-    public function store(StorePlaceRequest $request)
+    public function store(PlaceRequest $request)
     {
+        // Validación y creación
         $validated = $request->validated();
         Place::create($validated);
+
+        // Mensaje de confirmación
+        $this->infoToast('Lugar creado exitosamente');
         return redirect()->route('places.index');
     }
 
@@ -39,15 +43,22 @@ class PlaceController extends Controller
         return view('places.edit', compact('place'));
     }
 
-    public function update(UpdatePlaceRequest $request, Place $place)
+    public function update(PlaceRequest $request, Place $place)
     {
+        // Validación y actualización
         $place->update($request->validated());
+
+        // Mensaje de confirmación
+        $this->infoToast('Lugar actualizado exitosamente');
         return redirect()->route('places.index');
     }
 
     public function destroy(Place $place)
     {
         $place->delete();
+
+        // Mensaje de confirmación
+        $this->successToast('Lugar eliminado exitosamente');
         return redirect()->route('places.index');
     }
 }

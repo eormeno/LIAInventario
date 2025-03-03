@@ -3,66 +3,44 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
-use App\Traits\ToastTrigger;
-use Illuminate\Http\Request;
+use App\Models\Log;
+use App\Models\Asset;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreTicketRequest;
-use App\Models\Log;  // Asegúrate de que esté usando tu modelo Log y no Monolog
-
+use App\Traits\ToastTrigger;
+use Illuminate\Http\Request;
 
 class TicketController extends Controller
-{   use ToastTrigger;
-     // Este método maneja la ruta para mostrar todos los tickets
-//      public function index()
-// {
-//     // Obtener los tickets con su relación 'creator' y aplicar la paginación
-//     $tickets = Ticket::with([
-//         'creator', 
-//         'logs' => function ($query) {
-//             $query->latest()->take(1); // Obtiene solo el último log
-//         }
-//     ])->latest()->paginate(5);
-//     // Retornar la vista y pasar los tickets paginados
-//     return view('tickets.index', compact('tickets'));
-// }
-
-public function index()
 {
-    $user = auth()->user(); // Usuario autenticado
+    use ToastTrigger;
 
-    // Consulta base con relaciones y último log
-    $ticketsQuery = Ticket::with([
-        'creator',
-        'logs' => function ($query) {
-            $query->latest()->take(1); // Solo el último log
+    public function index()
+    {
+        $user = auth()->user();
+
+        // Consulta base con relaciones y último log
+        $ticketsQuery = Ticket::with([
+            'creator',
+            'logs' => function ($query) {
+                $query->latest()->take(1); // Solo el último log
+            }
+        ]);
+
+        // Filtrar según rol y área
+        if ($user->hasRole('root') || $user->coordinador) {
+            $tickets = $ticketsQuery->latest()->paginate(5);
+        } elseif (strtolower($user->area) === 'hardware') {
+            $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', ['hardware'])->latest()->paginate(5);
+        } elseif (strtolower($user->area) === 'software') {
+            $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', ['software'])->latest()->paginate(5);
+        } elseif (strtolower($user->area) === 'ti') {
+            $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', ['ti'])->latest()->paginate(5);
+        } else {
+            $tickets = collect(); // Retorna una colección vacía
         }
-    ]);
 
-   // Filtrar según rol y área
-if ($user->hasRole('root') || $user->coordinador) {
-    // Root y coordinadores ven todos los tickets
-    $tickets = $ticketsQuery->latest()->paginate(5);
-} elseif (strtolower($user->area) === 'hardware') {
-    // Usuarios del área de Hardware
-    $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', ['hardware'])->latest()->paginate(5);
-} elseif (strtolower($user->area) === 'software') {
-    // Usuarios del área de Software
-    $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', ['software'])->latest()->paginate(5);
-}elseif (strtolower($user->area) === 'ti') {
-    // Usuarios del área de Software
-    $tickets = $ticketsQuery->whereRaw('LOWER(area) = ?', ['ti'])->latest()->paginate(5);
-}
-else {
-    // Usuarios sin acceso o con área no definida
-    $tickets = collect(); // Retorna una colección vacía
-}
-
-
-    return view('tickets.index', compact('tickets'));
-}
-
-
-
+        return view('tickets.index', compact('tickets'));
+    }
 
     public function create()
     {
@@ -70,61 +48,44 @@ else {
     }
 
     public function store(StoreTicketRequest $request)
-{
-    // Validar los datos del formulario
-    $request->validate([
-        'subject' => 'required|string|max:255',
-        'description' => 'required|string',
-        'status' => 'required|string',
-        'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        'asset_code' => 'required|string',
+    {
+        // Obtener el Asset usando `codigo_inventario` o `codigo_patrimonio`
+        $asset = Asset::where('codigo_inventario', $request->asset_code)
+                      ->orWhere('codigo_patrimonio', $request->asset_code)
+                      ->first();
 
-    ]);
+        // Crear el ticket con los datos validados
+        $ticket = Ticket::create([
+            'subject' => $request->subject,
+            'created_by' => Auth::id(),
+            'asset_id' => $asset->id, // Asignar el ID del activo encontrado
+        ]);
 
-    // Crear el ticket
-    $ticket = Ticket::create([
-        'subject' => $request->subject,
-        'created_by' => Auth::id(), // Asignar el ID del usuario autenticado
-        'asset_id' => $request->asset_code,
-    ]);
-    
-    $imagePath = null;
+        // Manejar la imagen (si está presente)
+        $imagePath = null;
+        if ($request->hasFile('imagen')) {
+            $imagePath = $request->file('imagen')->store('logs_images', 'public');
+        }
 
-    if ($request->hasFile('imagen')) {
-        // Guardar la nueva imagen
-        $imagePath = $request->file('imagen')->store('logs_images', 'public');
-    }
-    $log = Log::create([
-        'ticket_id'=> $ticket->id,
-        'comentario' => $request->description,
-        'estado' => $request->status,
-        'user_id' => Auth::id(), // Asignar el ID del usuario autenticado
-        'imagen' => $imagePath,
-    ]);
+        // Crear un log relacionado
+        Log::create([
+            'ticket_id' => $ticket->id,
+            'comentario' => $request->description,
+            'estado' => $request->status,
+            'user_id' => Auth::id(),
+            'imagen' => $imagePath,
+        ]);
 
-
-    $this->infoToast('Ticket creado exitosamente');
+        $this->infoToast('Ticket creado exitosamente');
         return redirect()->route('tickets.index');
-    // return redirect()->route('tickets.index')->with('success', 'Ticket creado exitosamente.');
-}
+    }
 
-
-
-public function show($ticketId)
-{
-    // Obtén el ticket por ID
-    $ticket = Ticket::findOrFail($ticketId);
-    
-    // Obtén el historial de acciones o logs asociados al ticket
-    $logs = $ticket->logs;  // Esto asume que tienes una relación 'logs' en tu modelo de Ticket
-    
-    // Pasa el ticket y los logs a la vista
-    return view('tickets.show', compact('ticket', 'logs'));
-}
-
-
-
-
+    public function show($ticketId)
+    {
+        $ticket = Ticket::findOrFail($ticketId);
+        $logs = $ticket->logs; // Asume la relación 'logs' en el modelo Ticket
+        return view('tickets.show', compact('ticket', 'logs'));
+    }
 
     public function edit(Ticket $ticket)
     {
@@ -138,62 +99,57 @@ public function show($ticketId)
             'description' => $request->description,
         ]);
 
-        return redirect()->route('tickets.index')->with('success', 'Ticket actualizado');
+        $this->infoToast('Ticket actualizado correctamente');
+        return redirect()->route('tickets.index');
     }
 
     public function resolveTicket($ticketId)
     {
         $ticket = Ticket::findOrFail($ticketId);
 
-
-        // Crea un log para esta acción
         $this->createLog($ticket, 'Ticket resuelto');
-
-        return redirect()->route('tickets.index', $ticketId)->with('success', 'Ticket resuelto correctamente');
+        return redirect()->route('tickets.index')->with('success', 'Ticket resuelto correctamente');
     }
 
     private function createLog($ticket, $comentario)
     {
-        if ($comentario == 'Ticket resuelto'){
-            $estado = 'Resuelto';
-        }else{
-            $estado = 'En progreso';
-        }
+        $estado = $comentario === 'Ticket resuelto' ? 'Resuelto' : 'En progreso';
 
         Log::create([
             'ticket_id' => $ticket->id,
             'comentario' => $comentario,
-            'estado' => $estado, // O el estado que corresponda al log
-            'user_id' => Auth::id(), // El ID del usuario autenticado
-            'imagen' => null, // O la imagen si es necesario
+            'estado' => $estado,
+            'user_id' => Auth::id(),
+            'imagen' => null,
         ]);
     }
 
-
-    public function assignToArea(Request $request, Ticket $ticket) {
+    public function assignToArea(Request $request, Ticket $ticket)
+    {
         $validated = $request->validate([
             'area' => 'required|in:hardware,software,ti',
         ]);
 
-        if ($ticket->area == $validated['area']) {
+        if ($ticket->area === $validated['area']) {
             return redirect()->route('tickets.show', $ticket->id)->with('error', 'El ticket ya se encuentra en el área: ' . $validated['area']);
         }
+
         $ticket->area = $validated['area'];
         $ticket->save();
 
         $this->createLog($ticket, 'Ticket derivado al área: ' . $validated['area']);
-
         return redirect()->route('tickets.show', $ticket->id)->with('success', 'El ticket ha sido asignado al área: ' . $validated['area']);
     }
 
     public function destroy(Ticket $ticket)
     {
         $ticket->delete();
-
-        return redirect()->route('tickets.index')->with('success', 'Ticket eliminado');
+        $this->infoToast('Ticket eliminado exitosamente');
+        return redirect()->route('tickets.index');
     }
 
-    public function reopen(Ticket $ticket){
+    public function reopen(Ticket $ticket)
+    {
         $this->createLog($ticket, 'Ticket reabierto');
         return redirect()->route('tickets.show', $ticket->id)->with('success', 'Ticket reabierto');
     }

@@ -69,19 +69,21 @@
                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300">
             </div>
 
+
             <!-- Alta -->
             <div>
                 <label for="alta" class="block text-sm font-medium text-gray-700">Alta:</label>
-                <input type="date" name="alta" id="alta" value="{{ old('alta', $asset->alta ? $asset->alta->format('dd-mm-aa') : '') }}" required
-                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300">
+                <input type="date" name="alta" id="alta" value="{{ old('alta', $asset->alta ? $asset->alta->format('Y-m-d') : '') }}" 
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300">
             </div>
 
             <!-- Baja -->
             <div>
                 <label for="baja" class="block text-sm font-medium text-gray-700">Baja:</label>
                 <input type="date" name="baja" id="baja" value="{{ old('baja', $asset->baja ? $asset->baja->format('Y-m-d') : '') }}"
-                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300">
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300">
             </div>
+
 
             <!-- Observaciones -->
             <div>

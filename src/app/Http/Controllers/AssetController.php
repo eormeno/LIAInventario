@@ -3,28 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
-use Illuminate\Http\Request;
 use App\Traits\DebugHelper;
 use App\Traits\ToastTrigger;
-use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use App\Http\Requests\StoreAssetRequest;
+use Illuminate\Support\Arr;
 
 class AssetController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     use DebugHelper, ToastTrigger;
-    public function index(Request $request): View {
-        
-        // Obtener el término de búsqueda
-        $search = $request->input('search');
-        
-        
 
-        // Filtrar activos basados en la búsqueda
+    /**
+     * Mostrar una lista de recursos (activos) con búsqueda.
+     */
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
         $assets = Asset::when($search, function ($query, $search) {
             return $query->where('nombre', 'like', "%{$search}%")
                          ->orWhere('codigo_inventario', 'like', "%{$search}%")
@@ -32,120 +28,139 @@ class AssetController extends Controller
                          ->orWhere('detalle', 'like', "%{$search}%")
                          ->orWhere('tipo', 'like', "%{$search}%")
                          ->orWhere('observaciones', 'like', "%{$search}%");
-        })->paginate(4);
+        })->paginate(5);
 
-        // Pasar los activos y la búsqueda a la vista
         return view('assets.index', compact('assets', 'search'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Mostrar el formulario para crear un nuevo activo.
      */
-    public function create(): View {
+    public function create()
+    {
         return view('assets.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guardar un nuevo recurso en la base de datos.
      */
-    public function store(Request $request): RedirectResponse
-{
-    $validated = $request->validate([
-        'nombre' => 'required|string|max:255',
-        'codigo_inventario' => 'required|string|unique:assets,codigo_inventario',
-        'codigo_patrimonio' => 'required|string|unique:assets,codigo_patrimonio',
-        'detalle' => 'required|string',
-        'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        'tipo' => 'required|string',
-        'cantidad' => 'required|integer',
-        'alta' => 'nullable|date',
-        'baja' => 'nullable|date',
-        'observaciones' => 'nullable|string',
-    ]);
+    public function store(StoreAssetRequest $request)
+    {
+        // Los datos ya están validados en StoreAssetRequest
+        $validated = $request->validated();
 
-    if ($request->hasFile('imagen')) {
-        $imagePath = $request->file('imagen')->store('assets_images', 'public');
-        $validated['imagen'] = $imagePath;
+        // Procesar la imagen, si está presente
+        if ($request->hasFile('imagen')) {
+            $imagePath = $request->file('imagen')->store('assets_images', 'public');
+            $validated['imagen'] = $imagePath;
+        }
+
+        // Asignar fecha actual si no se proporciona 'alta'
+        $validated['alta'] = $validated['alta'] ?? Carbon::now()->format('d-m-y');
+
+        // Crear el activo
+        Asset::create($validated);
+
+        // Mensaje de éxito
+        $this->infoToast('Activo creado exitosamente');
+        return redirect()->route('assets.index');
     }
 
-    // Asigna solo la fecha en formato dd-mm-aa
-    $validated['alta'] = $validated['alta'] ?? Carbon::now()->format('d-m-y');
-
-    Asset::create($validated);
-
-    return redirect()->route('assets.index')->with('success', 'Activo creado con éxito');
-}
-
-
-    public function show(Asset $asset): View {
+    /**
+     * Mostrar un recurso específico.
+     */
+    public function show(Asset $asset)
+    {
         return view('assets.show', compact('asset'));
     }
 
-    public function edit(Asset $asset): View {
+    /**
+     * Mostrar el formulario para editar un recurso.
+     */
+    public function edit(Asset $asset)
+    {
         return view('assets.edit', compact('asset'));
     }
 
-    public function update(Request $request, Asset $asset): RedirectResponse
-{
-    $validated = $request->validate([
-        'nombre' => 'required|string|max:255',
-        'codigo_inventario' => 'required|string|unique:assets,codigo_inventario,' . $asset->id,
-        'codigo_patrimonio' => 'required|string|unique:assets,codigo_patrimonio,' . $asset->id,
-        'detalle' => 'required|string',
-        'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        'tipo' => 'required|string',
-        'cantidad' => 'required|integer',
-        'alta' => 'nullable|date',
-        'baja' => 'nullable|date',
-        'observaciones' => 'nullable|string',
-    ]);
+    /**
+     * Actualizar un recurso existente en la base de datos.
+     */
+    public function update(StoreAssetRequest $request, Asset $asset)
+    {
+        // Los datos ya están validados en StoreAssetRequest
+        $validated = $request->validated();
 
-    if ($request->hasFile('imagen')) {
+        // Depuración para verificar los datos que llegan al controlador
+        //dd($validated);
+    
+        // Procesar la imagen si hay una nueva
+        if ($request->hasFile('imagen')) {
+            // Eliminar la imagen existente si aplica
+            if ($asset->imagen) {
+                Storage::delete('public/' . $asset->imagen);
+            }
+            $validated['imagen'] = $request->file('imagen')->store('assets_images', 'public');
+        } else {
+            // Eliminar la clave 'imagen' para no sobreescribir el valor existente
+            $validated = Arr::except($validated, ['imagen']);
+        }
+
+    
+        // Conservar o actualizar la fecha de 'alta'
+        $validated['alta'] = $validated['alta'] ?? $asset->alta->format('Y-m-d');
+    
+        // Conservar o actualizar la fecha de 'baja'
+        $validated['baja'] = $validated['baja'] ?? $asset->baja?->format('Y-m-d');
+    
+        // Actualizar el activo
+        $asset->update($validated);
+    
+        // Mostrar mensaje de éxito
+        $this->infoToast('Activo actualizado exitosamente');
+        return redirect()->route('assets.index');
+    }
+    /**
+     * Eliminar un recurso de la base de datos.
+     */
+    public function destroy(Asset $asset)
+    {
+        // Eliminar la imagen asociada, si existe
         if ($asset->imagen) {
             Storage::delete('public/' . $asset->imagen);
         }
-        $imagePath = $request->file('imagen')->store('assets_images', 'public');
-        $validated['imagen'] = $imagePath;
-    }
 
-    // Asigna solo la fecha en formato dd-mm-aa
-    $validated['alta'] = $validated['alta'] ?? Carbon::now()->format('d-m-y');
-
-    $asset->update($validated);
-
-    return redirect()->route('assets.index')->with('success', 'Activo actualizado con éxito');
-}
-
-
-
-    public function destroy(Asset $asset): RedirectResponse {
         $asset->delete();
-        return redirect()->route('assets.index')->with('success', 'Activo eliminado con éxito');
+
+        // Mensaje de éxito
+        $this->successToast('Activo eliminado exitosamente');
+        return redirect()->route('assets.index');
     }
 
-    public function upload(Request $request): RedirectResponse
+    /**
+     * Subir un archivo relacionado con los activos.
+     */
+    public function upload(Request $request)
     {
         // Validar el archivo subido
-        $request->validate([
+        $validated = $request->validate([
             'file' => 'required|file|mimes:jpg,png,jpeg,gif|max:2048',
         ]);
 
-        // Almacenar el archivo en la carpeta 'uploads'
+        // Guardar el archivo
         $fileName = time() . '.' . $request->file->extension();
         $request->file->move(public_path('uploads'), $fileName);
 
-        // Guardar el nombre del archivo en la base de datos (considera si esto es lo necesario)
-        Asset::create(['filename' => $fileName]);
-
-        return back()->with('success', 'Archivo subido correctamente.');
+        // Mensaje de éxito
+        $this->infoToast('Archivo subido correctamente');
+        return back();
     }
 
-    public function showFiles(): View {
-        $files = Asset::all(); // Asegúrate de que esto es lo que deseas
+    /**
+     * Mostrar archivos relacionados.
+     */
+    public function showFiles()
+    {
+        $files = Asset::all();
         return view('show-files', compact('files'));
     }
 }
-
-
-
-

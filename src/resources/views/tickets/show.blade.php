@@ -49,6 +49,19 @@
                                 <p>Creado por: Usuario desconocido</p>
                             @endif
                         </div>
+                        <div>
+                            <label class="block text-gray-900 dark:text-gray-900 font-medium mb-2">Activo Relacionado</label>
+                            <p class="text-gray-800 dark:text-gray-600">
+                                @if ($ticket->asset)
+                                    {{-- Mostrar el codigo_inventario y, si no existe, el codigo_patrimonio --}}
+                                    Código de Inventario: {{ $ticket->asset->codigo_inventario ?? 'N/A' }}<br>
+                                    Código de Patrimonio: {{ $ticket->asset->codigo_patrimonio ?? 'N/A' }}
+                                @else
+                                    <span class="text-red-500">No hay un activo asociado</span>
+                                @endif
+                            </p>
+                        </div>
+
                     </div>
 
                     {{-- Historial de Logs --}}
