@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
+use App\Models\Place;
 use App\Traits\DebugHelper;
 use App\Traits\ToastTrigger;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class AssetController extends Controller
                          ->orWhere('detalle', 'like', "%{$search}%")
                          ->orWhere('tipo', 'like', "%{$search}%")
                          ->orWhere('observaciones', 'like', "%{$search}%");
-        })->paginate(5);
+        })->latest()->paginate(5);
 
         return view('assets.index', compact('assets', 'search'));
     }
@@ -38,7 +39,8 @@ class AssetController extends Controller
      */
     public function create()
     {
-        return view('assets.create');
+        $places = Place::all(); // Obtener todos los lugares disponibles
+        return view('assets.create', compact('places'));
     }
 
     /**
@@ -52,19 +54,20 @@ class AssetController extends Controller
         // Procesar la imagen, si está presente
         if ($request->hasFile('imagen')) {
             $imagePath = $request->file('imagen')->store('assets_images', 'public');
-            $validated['imagen'] = $imagePath;
+            $validated['imagen'] = $imagePath; // Añadir la imagen al array validado
         }
 
         // Asignar fecha actual si no se proporciona 'alta'
-        $validated['alta'] = $validated['alta'] ?? Carbon::now()->format('d-m-y');
+        $validated['alta'] = $validated['alta'] ?? Carbon::now()->format('Y-m-d');
 
-        // Crear el activo
-        Asset::create($validated);
+        // Crear el activo directamente con los datos validados
+        $asset = Asset::create($validated);
 
         // Mensaje de éxito
         $this->infoToast('Activo creado exitosamente');
         return redirect()->route('assets.index');
     }
+
 
     /**
      * Mostrar un recurso específico.
@@ -79,7 +82,8 @@ class AssetController extends Controller
      */
     public function edit(Asset $asset)
     {
-        return view('assets.edit', compact('asset'));
+        $places = Place::all(); // Obtener todos los lugares disponibles
+        return view('assets.edit', compact('asset', 'places'));
     }
 
     /**
@@ -90,9 +94,6 @@ class AssetController extends Controller
         // Los datos ya están validados en StoreAssetRequest
         $validated = $request->validated();
 
-        // Depuración para verificar los datos que llegan al controlador
-        //dd($validated);
-    
         // Procesar la imagen si hay una nueva
         if ($request->hasFile('imagen')) {
             // Eliminar la imagen existente si aplica
@@ -105,20 +106,21 @@ class AssetController extends Controller
             $validated = Arr::except($validated, ['imagen']);
         }
 
-    
         // Conservar o actualizar la fecha de 'alta'
         $validated['alta'] = $validated['alta'] ?? $asset->alta->format('Y-m-d');
-    
+
         // Conservar o actualizar la fecha de 'baja'
         $validated['baja'] = $validated['baja'] ?? $asset->baja?->format('Y-m-d');
-    
-        // Actualizar el activo
+
+        // Actualizar el activo con place_id incluido
+        $validated['place_id'] = $request->input('place_id'); // Asegura que se guarde el lugar actualizado
         $asset->update($validated);
-    
+
         // Mostrar mensaje de éxito
         $this->infoToast('Activo actualizado exitosamente');
         return redirect()->route('assets.index');
     }
+
     /**
      * Eliminar un recurso de la base de datos.
      */
@@ -134,33 +136,5 @@ class AssetController extends Controller
         // Mensaje de éxito
         $this->successToast('Activo eliminado exitosamente');
         return redirect()->route('assets.index');
-    }
-
-    /**
-     * Subir un archivo relacionado con los activos.
-     */
-    public function upload(Request $request)
-    {
-        // Validar el archivo subido
-        $validated = $request->validate([
-            'file' => 'required|file|mimes:jpg,png,jpeg,gif|max:2048',
-        ]);
-
-        // Guardar el archivo
-        $fileName = time() . '.' . $request->file->extension();
-        $request->file->move(public_path('uploads'), $fileName);
-
-        // Mensaje de éxito
-        $this->infoToast('Archivo subido correctamente');
-        return back();
-    }
-
-    /**
-     * Mostrar archivos relacionados.
-     */
-    public function showFiles()
-    {
-        $files = Asset::all();
-        return view('show-files', compact('files'));
     }
 }

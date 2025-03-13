@@ -18,6 +18,15 @@
             <p><span class="font-semibold">Baja:</span> {{ $asset->baja }}</p>
             <p><span class="font-semibold">Observaciones:</span> {{ $asset->observaciones }}</p>
 
+            <!-- Información del lugar relacionado -->
+            <p><span class="font-semibold">Lugar Asignado:</span> 
+                @if($asset->place)
+                    {{ $asset->place->name }}
+                @else
+                    <span>No asignado</span>
+                @endif
+            </p>
+
             <!-- Mostrar imagen -->
             <div class="col-span-1 sm:col-span-2">
                 <p class="font-semibold mb-2">Imagen:</p>

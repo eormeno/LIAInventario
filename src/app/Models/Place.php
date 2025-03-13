@@ -21,4 +21,9 @@ class Place extends Model
     {
         return $this->hasMany(Ticket::class);
     }
+
+    public function assets()
+    {
+        return $this->hasMany(Asset::class);
+    }
 }

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Asset;
+use App\Models\Place;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -30,6 +31,7 @@ class AssetFactory extends Factory
             'alta' => $this->faker->date(),
             'baja' => $this->faker->optional()->date(), // Puede ser null
             'observaciones' => $this->faker->optional()->text(),
+            'place_id' => Place::factory(),
         ];
     }
 

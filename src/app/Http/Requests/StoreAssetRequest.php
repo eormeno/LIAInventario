@@ -29,6 +29,7 @@ class StoreAssetRequest extends FormRequest
             'alta' => ['nullable', 'date'],
             'baja' => ['nullable', 'date'],
             'observaciones' => ['nullable', 'string'],
+            'place_id' => ['nullable', 'exists:places,id'], // Validación para place_id
         ];
 
         if ($this->isMethod('POST')) {
@@ -77,6 +78,8 @@ class StoreAssetRequest extends FormRequest
             'baja.date' => 'La fecha de baja debe ser una fecha válida.',
 
             'observaciones.string' => 'Las observaciones deben ser texto.',
+
+            'place_id.exists' => 'El lugar seleccionado no es válido.', // Mensaje de validación para place_id
         ];
     }
 

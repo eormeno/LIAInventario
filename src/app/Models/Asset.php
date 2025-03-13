@@ -12,7 +12,7 @@ class Asset extends Model
 
     protected $fillable = [
         'nombre', 'codigo_inventario', 'codigo_patrimonio', 'detalle',
-        'imagen', 'tipo', 'cantidad', 'alta', 'baja', 'observaciones'
+        'imagen', 'tipo', 'cantidad', 'alta', 'baja', 'observaciones', 'place_id',
     ];
 
     public function tickets()
@@ -30,6 +30,12 @@ class Asset extends Model
     {
         return $value ? Carbon::parse($value) : null;
     }
+
+    public function place()
+    {
+        return $this->belongsTo(Place::class);
+    }
+
 }
 
 

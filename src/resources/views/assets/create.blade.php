@@ -31,6 +31,20 @@
                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300">
             </div>
 
+                <!-- asignar Place -->
+
+            <div>
+                <label for="place_id" class="block text-sm font-medium text-gray-700">Lugar</label>
+                <select name="place_id" id="place_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-300">
+                    <option value="">Seleccione un lugar</option>
+                    @foreach ($places as $place)
+                        <option value="{{ $place->id }}" {{ isset($asset) && $asset->place_id == $place->id ? 'selected' : '' }}>
+                            {{ $place->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
             <!-- Detalle -->
             <div>
                 <label for="detalle" class="block text-sm font-medium text-gray-700">Detalle:</label>
